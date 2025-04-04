@@ -2,13 +2,13 @@ import { useState } from 'react'
 import { Product } from '../data/products'
 
 interface Props {
-  specifications: Product
+  specifications: Product['specifications'] // Chỉ lấy phần specifications từ Product
 }
 
 const ProductSpecifications = ({ specifications }: Props) => {
   const [showFullSpecs, setShowFullSpecs] = useState(false)
 
-  const specEntries = Object.entries(specifications).map(([key, value]) => ({
+  const specEntries = Object.entries(specifications || {}).map(([key, value]) => ({
     name: getDisplayName(key),
     value,
     key
