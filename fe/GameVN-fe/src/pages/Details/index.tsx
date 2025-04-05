@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { products } from '../../data/products'
 import ProductSpecifications from '../../components/ProductSpecifications'
 
@@ -8,6 +8,7 @@ const DetailsPage: React.FC = () => {
   const product = products.find((p) => p.id === Number(id))
   const [selectedQuantity, setSelectedQuantity] = useState(1)
   const [error, setError] = useState('')
+  const navigate = useNavigate()
 
   if (!product) {
     return <div className='container mx-auto p-4'>Sản phẩm không tồn tại.</div>
@@ -39,6 +40,16 @@ const DetailsPage: React.FC = () => {
       setSelectedQuantity(value)
       setError('')
     }
+  }
+
+  const handleAddToCart = () => {
+    const productDetails = {
+      name: product.name,
+      image: product.image,
+      price: product.price
+    }
+
+    navigate('/cart', { state: productDetails })
   }
 
   return (
@@ -84,7 +95,6 @@ const DetailsPage: React.FC = () => {
                   <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M20 12H4' />
                 </svg>
               </button>
-              
               <input
                 type='number'
                 value={selectedQuantity}
@@ -93,7 +103,6 @@ const DetailsPage: React.FC = () => {
                 min='1'
                 max={product.quantity}
               />
-              
               <button
                 onClick={handleIncrease}
                 className='flex items-center justify-center w-10 h-10 rounded-full bg-blue-500 hover:bg-blue-600 transition-colors duration-200 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50'
@@ -114,6 +123,7 @@ const DetailsPage: React.FC = () => {
           </div>
 
           <button
+            onClick={handleAddToCart}
             className={`px-6 py-3 rounded-lg transition-colors duration-200 ${
               selectedQuantity > product.quantity
                 ? 'bg-gray-400 cursor-not-allowed'

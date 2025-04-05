@@ -17,10 +17,10 @@ const Home: React.FC = () => {
 
           {/* Banners */}
           <div className='grid grid-cols-2 gap-4'>
-            <img src='https://picsum.photos/400/200?random=1' alt='Banner 1' className='rounded-lg shadow-md' />
-            <img src='https://picsum.photos/400/200?random=2' alt='Banner 2' className='rounded-lg shadow-md' />
-            <img src='https://picsum.photos/400/200?random=3' alt='Banner 3' className='rounded-lg shadow-md' />
-            <img src='https://picsum.photos/400/200?random=4' alt='Banner 4' className='rounded-lg shadow-md' />
+            <img src='https://picsum.photos/400/200?random=1' alt='Banner 1' className='rounded-lg shadow-md w-full' />
+            <img src='https://picsum.photos/400/200?random=2' alt='Banner 2' className='rounded-lg shadow-md w-full' />
+            <img src='https://picsum.photos/400/200?random=3' alt='Banner 3' className='rounded-lg shadow-md w-full' />
+            <img src='https://picsum.photos/400/200?random=4' alt='Banner 4' className='rounded-lg shadow-md w-full' />
           </div>
         </div>
       </div>
