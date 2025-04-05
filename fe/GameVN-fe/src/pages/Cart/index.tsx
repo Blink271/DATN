@@ -41,7 +41,6 @@ const CartPage = () => {
         <div className='border-t border-b border-gray-200 py-4 mb-6'>
           <div className='flex justify-between items-start mb-4'>
             <img src={product.image} alt={product.name} className='w-16 h-16 object-cover rounded m-1' />
-            
             <div>
               <h3 className='font-medium'>{product.name}</h3>
               <button className='text-red-500 text-sm mt-1'>Xoá</button>

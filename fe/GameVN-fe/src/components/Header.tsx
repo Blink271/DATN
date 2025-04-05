@@ -1,17 +1,17 @@
 // src/components/Header.tsx
-import { FC, useState } from 'react';
-import { FaShoppingCart, FaUser, FaPhoneAlt, FaStore, FaSearch, FaTools } from 'react-icons/fa';
+import { FC, useState } from 'react'
+import { FaShoppingCart, FaUser, FaPhoneAlt, FaStore, FaSearch, FaTools } from 'react-icons/fa'
 
 const Header: FC = () => {
-  const [isLoginPopupVisible, setLoginPopupVisible] = useState(false);
-  const [isRegisterForm, setRegisterForm] = useState(false);
+  const [isLoginPopupVisible, setLoginPopupVisible] = useState(false)
+  const [isRegisterForm, setRegisterForm] = useState(false)
 
   const infoItems = [
     { icon: FaPhoneAlt, text: '1900.5301', link: '/' },
     { icon: FaStore, text: 'Showroom', link: '/' },
     { icon: FaTools, text: 'Tra cứu đơn', link: '/' },
     { icon: FaShoppingCart, text: 'Giỏ hàng', link: '/Cart' }
-  ];
+  ]
 
   return (
     <header className='bg-red-600 text-white'>
@@ -50,8 +50,8 @@ const Header: FC = () => {
           {/* Login Button */}
           <button
             onClick={() => {
-              setLoginPopupVisible(true);
-              setRegisterForm(false);
+              setLoginPopupVisible(true)
+              setRegisterForm(false)
             }}
             className='flex items-center gap-1 text-white hover:text-gray-200'
           >
@@ -77,35 +77,19 @@ const Header: FC = () => {
               <form>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Email</label>
-                  <input
-                    type='email'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập email'
-                  />
+                  <input type='email' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập email' />
                 </div>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Họ</label>
-                  <input
-                    type='text'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập họ'
-                  />
+                  <input type='text' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập họ' />
                 </div>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Tên</label>
-                  <input
-                    type='text'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập tên'
-                  />
+                  <input type='text' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập tên' />
                 </div>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Mật khẩu</label>
-                  <input
-                    type='password'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập mật khẩu'
-                  />
+                  <input type='password' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập mật khẩu' />
                 </div>
                 <button type='submit' className='w-full bg-red-600 text-white py-2 rounded-md'>
                   TẠO TÀI KHOẢN
@@ -115,19 +99,11 @@ const Header: FC = () => {
               <form>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Email</label>
-                  <input
-                    type='email'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập email'
-                  />
+                  <input type='email' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập email' />
                 </div>
                 <div className='mb-4'>
                   <label className='block text-sm font-medium mb-1'>Mật khẩu</label>
-                  <input
-                    type='password'
-                    className='w-full px-3 py-2 border rounded-md'
-                    placeholder='Nhập mật khẩu'
-                  />
+                  <input type='password' className='w-full px-3 py-2 border rounded-md' placeholder='Nhập mật khẩu' />
                 </div>
                 <button type='submit' className='w-full bg-red-600 text-white py-2 rounded-md'>
                   Đăng nhập
@@ -138,22 +114,14 @@ const Header: FC = () => {
               {isRegisterForm ? (
                 <p className='text-sm'>
                   Bạn đã có tài khoản?{' '}
-                  <a
-                    href='#'
-                    onClick={() => setRegisterForm(false)}
-                    className='text-blue-500 hover:underline'
-                  >
+                  <a href='#' onClick={() => setRegisterForm(false)} className='text-blue-500 hover:underline'>
                     Đăng nhập!
                   </a>
                 </p>
               ) : (
                 <p className='text-sm'>
                   Bạn chưa có tài khoản?{' '}
-                  <a
-                    href='#'
-                    onClick={() => setRegisterForm(true)}
-                    className='text-blue-500 hover:underline'
-                  >
+                  <a href='#' onClick={() => setRegisterForm(true)} className='text-blue-500 hover:underline'>
                     Đăng ký ngay!
                   </a>
                 </p>
@@ -163,7 +131,7 @@ const Header: FC = () => {
         </div>
       )}
     </header>
-  );
-};
+  )
+}
 
-export default Header;
+export default Header
