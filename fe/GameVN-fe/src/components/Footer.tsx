@@ -76,13 +76,13 @@ export default function Footer() {
       <div className='mt-10 border-t border-gray-200 pt-6 flex flex-col md:flex-row items-center justify-between'>
         <span className='mb-4 md:mb-0 font-medium'>KẾT NỐI VỚI CHÚNG TÔI</span>
         <div className='flex gap-4 text-2xl text-black'>
-          <a href='#'>
+          <a href='https://www.facebook.com/tuanvu271'>
             <FaFacebookF />
           </a>
-          <a href='#'>
+          <a href='https://www.tiktok.com/@roseeee.271'>
             <FaTiktok />
           </a>
-          <a href='#'>
+          <a href='https://www.youtube.com/@BPLisa271'>
             <FaYoutube />
           </a>
           <a href='#'>
