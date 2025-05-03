@@ -91,6 +91,54 @@ export class ProductService {
     return product;
   }
 
+  async searchProductsByName(name: string) {
+  // Sử dụng regex để tìm kiếm không phân biệt hoa thường
+  const regex = new RegExp(name, 'i');
+  
+  const products = await Product.find({ name: { $regex: regex } });
+  
+  const detailedProducts = await Promise.all(
+    products.map(async (product) => {
+      let details;
+      if (product.category === 'mouse') {
+        details = await MouseDetails.findOne({ product_id: product._id });
+      } else if (product.category === 'keyboard') {
+        details = await KeyboardDetails.findOne({ product_id: product._id });
+      } else if (product.category === 'headphone') {
+        details = await HeadphoneDetails.findOne({ product_id: product._id });
+      }
+      return { ...product.toJSON(), details };
+    })
+  );
+
+  return detailedProducts;
+}
+
+  async getProductsByID(id: string, category: string) {
+    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+      throw new Error('Invalid category');
+    }
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return null;
+    }
+    if (product.category !== category) {
+      throw new Error('Category mismatch');
+    }
+
+    let details;
+    if (category === 'mouse') {
+      details = await MouseDetails.findOne({ product_id: id });
+    } else if (category === 'keyboard') {
+      details = await KeyboardDetails.findOne({ product_id: id });
+    } else if (category === 'headphone') {
+      details = await HeadphoneDetails.findOne({ product_id: id });
+    }
+
+    return { ...product.toJSON(), details };
+}
+
   async updateProduct(id: string, category: string, data: any) {
     if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
       throw new Error('Invalid category');

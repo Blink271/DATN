@@ -6,8 +6,10 @@ interface User {
   id: number
   name: string
   email: string
+  password: string
   phone: string
   address: string
+  role: 'admin' | 'user'
   created_at: string
 }
 
@@ -17,7 +19,7 @@ const AdminUsers: React.FC = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const [selectedUser, setSelectedUser] = useState<User | null>(null)
-  const [newUser, setNewUser] = useState({ name: '', email: '', phone: '', address: '' })
+  const [newUser, setNewUser] = useState({ name: '', email: '', password: '', phone: '', address: '', role: 'admin' })
 
   useEffect(() => {
     const mockUsers: User[] = [
@@ -25,8 +27,10 @@ const AdminUsers: React.FC = () => {
         id: 1,
         name: 'John Doe',
         email: 'john@example.com',
+        password: 'password123',
         phone: '123456789',
         address: '123 Street',
+        role: 'admin',
         created_at: '2023-01-01'
       }
     ]
@@ -35,9 +39,9 @@ const AdminUsers: React.FC = () => {
 
   const handleAddUser = () => {
     // Thêm logic để gửi dữ liệu đến API
-    setUsers([...users, { ...newUser, id: users.length + 1, created_at: new Date().toISOString() }])
+    setUsers([...users, { ...newUser, id: users.length + 1, created_at: new Date().toISOString(), role: 'admin' }])
     setIsAddModalOpen(false)
-    setNewUser({ name: '', email: '', phone: '', address: '' })
+    setNewUser({ name: '', email: '', password: '', phone: '', address: '', role: 'admin' })
   }
 
   const handleEditUser = () => {
@@ -73,24 +77,20 @@ const AdminUsers: React.FC = () => {
             <table className='min-w-full'>
               <thead>
                 <tr className='bg-gray-100'>
-                  <th className='p-3 text-left'>ID</th>
                   <th className='p-3 text-left'>Name</th>
                   <th className='p-3 text-left'>Email</th>
                   <th className='p-3 text-left'>Phone</th>
-                  <th className='p-3 text-left'>Address</th>
-                  <th className='p-3 text-left'>Created At</th>
+                  <th className='p-3 text-left'>Role</th>
                   <th className='p-3 text-left'>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {users.map((user) => (
                   <tr key={user.id} className='border-b'>
-                    <td className='p-3'>{user.id}</td>
                     <td className='p-3'>{user.name}</td>
                     <td className='p-3'>{user.email}</td>
                     <td className='p-3'>{user.phone}</td>
-                    <td className='p-3'>{user.address}</td>
-                    <td className='p-3'>{user.created_at}</td>
+                    <td className='p-3'>{user.role}</td>
                     <td className='p-3'>
                       <button
                         onClick={() => {
@@ -148,6 +148,15 @@ const AdminUsers: React.FC = () => {
                 onChange={(e) => setNewUser({ ...newUser, address: e.target.value })}
                 className='w-full p-2 border rounded'
               />
+              <select
+                value={newUser.role}
+                onChange={(e) => setNewUser({ ...newUser, role: e.target.value as 'admin' | 'user' })}
+                className='w-full p-2 border rounded'
+              >
+              <option value='admin'>Admin</option>
+              <option value='user'>User</option>
+              </select>
+
               <div className='flex justify-end space-x-2'>
                 <button onClick={() => setIsAddModalOpen(false)} className='bg-gray-500 text-white px-4 py-2 rounded'>
                   Cancel
@@ -187,6 +196,14 @@ const AdminUsers: React.FC = () => {
                   onChange={(e) => setSelectedUser({ ...selectedUser, address: e.target.value })}
                   className='w-full p-2 border rounded'
                 />
+                <select
+                  value={selectedUser.role}
+                  onChange={(e) => setSelectedUser({ ...selectedUser, role: e.target.value as 'admin' | 'user' })}
+                  className='w-full p-2 border rounded'
+                >
+                  <option value='admin'>Admin</option>
+                  <option value='user'>User</option>
+                </select>
                 <div className='flex justify-end space-x-2'>
                   <button
                     onClick={() => setIsEditModalOpen(false)}

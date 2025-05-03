@@ -26,6 +26,32 @@ export class ProductController {
     }
   }
 
+  // Thêm vào ProductController
+async searchProductsByName(req: Request, res: Response): Promise<void> {
+  try {
+    const products = await this.productService.searchProductsByName(req.params.name);
+    res.json(products);
+  } catch (error: any) {
+    res.status(500).json({ 
+      message: 'Error searching products', 
+      error: error.message 
+    });
+  }
+}
+
+  async getProductsByID(req: Request, res: Response): Promise<void> {
+    try {
+      const product = await this.productService.getProductsByID(req.params.id, req.params.category);
+      if (!product) {
+        res.status(404).json({ message: 'Product not found' });
+        return;
+      }
+      res.json(product);
+    } catch (error: any) {
+      res.status(400).json({ message: 'Error fetching product', error: error.message });
+    }
+  }
+
   async createProduct(req: Request, res: Response): Promise<void> {
     try {
       const product = await this.productService.createProduct(req.params.category, req.body);
