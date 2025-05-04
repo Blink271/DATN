@@ -153,8 +153,8 @@ const AdminUsers: React.FC = () => {
                 onChange={(e) => setNewUser({ ...newUser, role: e.target.value as 'admin' | 'user' })}
                 className='w-full p-2 border rounded'
               >
-              <option value='admin'>Admin</option>
-              <option value='user'>User</option>
+                <option value='admin'>Admin</option>
+                <option value='user'>User</option>
               </select>
 
               <div className='flex justify-end space-x-2'>

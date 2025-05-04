@@ -1,29 +1,71 @@
 import { useState } from 'react'
-import { Product } from '../data/products'
+import { Product, MouseDetails, KeyboardDetails, HeadphoneDetails } from '../types'
 
 interface Props {
-  specifications: Product['specifications'] // Chỉ lấy phần specifications từ Product
+  product: Product
 }
 
-const ProductSpecifications = ({ specifications }: Props) => {
+const ProductSpecifications = ({ product }: Props) => {
   const [showFullSpecs, setShowFullSpecs] = useState(false)
+  const details = product.details as MouseDetails | KeyboardDetails | HeadphoneDetails
 
-  const specEntries = Object.entries(specifications || {}).map(([key, value]) => ({
-    name: getDisplayName(key),
-    value,
-    key
-  }))
+  const getSpecifications = () => {
+    const baseSpecs = [
+      { name: 'Thương hiệu', value: product.brand },
+      { name: 'Tình trạng', value: product.stock > 0 ? 'Còn hàng' : 'Hết hàng' },
+      { name: 'Đã bán', value: product.sold_count }
+    ]
 
-  const initialSpecs = specEntries.slice(0, 5)
-  const remainingSpecs = specEntries.slice(5)
+    switch (product.category) {
+      case 'mouse': {
+        const mouseDetails = details as MouseDetails
+        return [
+          ...baseSpecs,
+          { name: 'DPI', value: mouseDetails.dpi },
+          { name: 'Loại cảm biến', value: mouseDetails.sensor_type },
+          { name: 'Kết nối', value: mouseDetails.wireless ? 'Không dây' : 'Có dây' },
+          { name: 'Đèn LED', value: mouseDetails.rgb ? 'Có RGB' : 'Không RGB' },
+          { name: 'Số nút bấm', value: mouseDetails.buttons }
+        ]
+      }
+      case 'keyboard': {
+        const keyboardDetails = details as KeyboardDetails
+        return [
+          ...baseSpecs,
+          { name: 'Loại switch', value: keyboardDetails.switch_type },
+          { name: 'Bố cục', value: keyboardDetails.layout },
+          { name: 'Key rollover', value: keyboardDetails.key_rollover },
+          { name: 'Kết nối', value: keyboardDetails.wireless ? 'Không dây' : 'Có dây' },
+          { name: 'Đèn LED', value: keyboardDetails.rgb ? 'Có RGB' : 'Không RGB' }
+        ]
+      }
+      case 'headphone': {
+        const headphoneDetails = details as HeadphoneDetails
+        return [
+          ...baseSpecs,
+          { name: 'Kích thước driver', value: headphoneDetails.driver_size },
+          { name: 'Tần số đáp ứng', value: headphoneDetails.frequency_response },
+          { name: 'Kết nối', value: headphoneDetails.wireless ? 'Không dây' : 'Có dây' },
+          { name: 'Microphone', value: headphoneDetails.microphone ? 'Có' : 'Không' },
+          { name: 'Âm thanh vòm', value: headphoneDetails.surround_sound ? 'Có' : 'Không' }
+        ]
+      }
+      default:
+        return baseSpecs
+    }
+  }
+
+  const specifications = getSpecifications()
+  const initialSpecs = specifications.slice(0, 5)
+  const remainingSpecs = specifications.slice(5)
 
   return (
     <div className='bg-white rounded-lg shadow-sm p-4 border border-gray-200'>
       <h2 className='text-lg font-bold mb-4 text-gray-800'>Thông số kỹ thuật</h2>
 
       <div className='space-y-3'>
-        {initialSpecs.map(({ name, value, key }) => (
-          <div key={key} className='grid grid-cols-2 gap-4'>
+        {initialSpecs.map(({ name, value }, index) => (
+          <div key={index} className='grid grid-cols-2 gap-4'>
             <span className='text-gray-600 text-sm'>{name}</span>
             <span className='font-medium text-sm text-gray-800'>{value}</span>
           </div>
@@ -56,8 +98,8 @@ const ProductSpecifications = ({ specifications }: Props) => {
                   </div>
 
                   <div className='space-y-3 divide-y divide-gray-100'>
-                    {specEntries.map(({ name, value, key }) => (
-                      <div key={key} className='grid grid-cols-2 gap-4 py-3'>
+                    {specifications.map(({ name, value }, index) => (
+                      <div key={index} className='grid grid-cols-2 gap-4 py-3'>
                         <span className='text-gray-600'>{name}</span>
                         <span className='font-medium text-gray-800'>{value}</span>
                       </div>
@@ -78,23 +120,6 @@ const ProductSpecifications = ({ specifications }: Props) => {
       )}
     </div>
   )
-}
-
-// Helper function to convert keys to display names
-function getDisplayName(key: string): string {
-  const names: Record<string, string> = {
-    status: 'Tình trạng',
-    connection: 'Kết nối',
-    led: 'Đèn LED',
-    dpi: 'Độ phân giải',
-    size: 'Kích thước',
-    weight: 'Trọng lượng',
-    buttons: 'Số nút bấm',
-    sensor: 'Cảm biến',
-    pollingRate: 'Tần số phản hồi',
-    warranty: 'Bảo hành'
-  }
-  return names[key] || key
 }
 
 export default ProductSpecifications
