@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 
 const Slider: React.FC = () => {
   const slides = [
-    'https://picsum.photos/800/300?random=1',
-    'https://picsum.photos/800/300?random=2',
-    'https://picsum.photos/800/300?random=3'
+    'https://file.hstatic.net/200000722513/file/thang_04_layout_web_-07.png',
+    'https://file.hstatic.net/200000722513/file/layout_web_-09_d2c2f20ee0af491b8bf40d032ff74dbf.png',
+    'https://file.hstatic.net/200000722513/file/thang_04_layout_web_-02.png'
   ]
   const [currentSlide, setCurrentSlide] = useState(0)
 

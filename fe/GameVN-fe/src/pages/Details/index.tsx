@@ -80,7 +80,25 @@ const DetailsPage: React.FC = () => {
       category: product.category
     }
 
-    navigate('/cart', { state: productDetails })
+    // Get existing cart from localStorage
+    const existingCart = localStorage.getItem('cart')
+    const cartItems = existingCart ? JSON.parse(existingCart) : []
+
+    // Check if product already exists in cart
+    const existingProductIndex = cartItems.findIndex((item: any) => item.id === productDetails.id)
+    if (existingProductIndex !== -1) {
+      // Update quantity if product exists
+      cartItems[existingProductIndex].quantity += selectedQuantity
+    } else {
+      // Add new product to cart
+      cartItems.push(productDetails)
+    }
+
+    // Save updated cart to localStorage
+    localStorage.setItem('cart', JSON.stringify(cartItems))
+
+    // Navigate to cart page
+    navigate('/cart')
   }
 
   return (

@@ -4,6 +4,8 @@ Table Users {
   name varchar(100)
   email varchar(100) [unique]
   password varchar(255)
+  phone varchar(10)
+  role enum('admin', 'user')
   created_at datetime
 }
 
@@ -121,16 +123,4 @@ Table Reviews {
   created_at datetime
 }
 
-// Vai trò người dùng
-Table Roles {
-  id int [pk, increment]
-  name varchar(50) // ví dụ: admin, customer, staff
-  description text
-}
 
-// Bảng trung gian phân quyền người dùng
-Table UserRoles {
-  id int [pk, increment]
-  user_id int [ref: > Users.id]
-  role_id int [ref: > Roles.id]
-}

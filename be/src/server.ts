@@ -4,6 +4,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import productRoutes from './routes/productRoutes';
 import userRoutes from './routes/userRoutes'; // Đảm bảo file này tồn tại
+import orderRoutes from './routes/orderRoutes'; // Đảm bảo file này tồn tại
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {

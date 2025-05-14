@@ -1,5 +1,8 @@
-import { useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
+import axios from 'axios'
+import { AxiosError } from 'axios'
+import { API_URL_ORDER } from '../../constants'
 
 enum CheckoutStep {
   CART = 1,
@@ -8,102 +11,281 @@ enum CheckoutStep {
   COMPLETION = 4
 }
 
-const CartPage = () => {
-  const location = useLocation()
-  const product = location.state
+interface Product {
+  id: string
+  name: string
+  price: number
+  image: string
+  quantity: number
+  category: string
+}
 
+interface User {
+  _id: string
+  name: string
+}
+
+const CartPage = () => {
+  const navigate = useNavigate()
+  const [cartItems, setCartItems] = useState<Product[]>([])
   const [currentStep, setCurrentStep] = useState<CheckoutStep>(CheckoutStep.CART)
-  const [quantity, setQuantity] = useState(1)
   const [showDiscountInput, setShowDiscountInput] = useState(false)
   const [discountCode, setDiscountCode] = useState('')
-  const [name, setName] = useState('Nguyễn Văn A')
-  const [phone, setPhone] = useState('0123456789')
-  const [address, setAddress] = useState('Hà Nội, Việt Nam')
-  const [notes, setNotes] = useState('Ghi chú thêm cho đơn hàng')
+  const [name, setName] = useState('')
+  const [phone, setPhone] = useState('')
+  const [address, setAddress] = useState('')
+  const [notes, setNotes] = useState('')
   const [requireInvoice, setRequireInvoice] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [user, setUser] = useState<User | null>(null)
 
   const shippingFee = 40000
-  const total = product ? product.price * quantity + shippingFee : 0
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const total = subtotal + shippingFee
+
+  // Load cart and user info on mount
+  useEffect(() => {
+    // Load cart from localStorage
+    const storedCart = localStorage.getItem('cart')
+    if (storedCart) {
+      try {
+        setCartItems(JSON.parse(storedCart))
+      } catch {
+        setError('Không thể tải giỏ hàng.')
+      }
+    }
+
+    // Load user info from localStorage
+    const storedUser = localStorage.getItem('user')
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser)
+        setUser({ _id: parsedUser._id, name: parsedUser.name })
+        setName(parsedUser.name || '')
+        setPhone(parsedUser.phone || '')
+        setAddress(parsedUser.address || '')
+      } catch {
+        setError('Không thể tải thông tin người dùng. Vui lòng đăng nhập lại.')
+      }
+    }
+  }, [])
 
   const handleCheckout = () => {
+    if (!user) {
+      setError('Vui lòng đăng nhập trước khi đặt hàng.')
+      return
+    }
+    if (cartItems.length === 0) {
+      setError('Giỏ hàng trống. Vui lòng thêm sản phẩm.')
+      return
+    }
     setCurrentStep(CheckoutStep.INFO)
   }
 
-  const handleSubmitOrder = (e: React.FormEvent) => {
+  const handleSubmitOrder = async (e: React.FormEvent) => {
     e.preventDefault()
     setCurrentStep(CheckoutStep.PAYMENT)
-    // Trong thực tế, bạn sẽ xử lý thanh toán ở đây
+  }
+
+  const handlePlaceOrder = async () => {
+    if (cartItems.length === 0) {
+      setError('Giỏ hàng trống. Vui lòng thêm sản phẩm.')
+      return
+    }
+
+    if (!user) {
+      setError('Vui lòng đăng nhập trước khi đặt hàng.')
+      return
+    }
+
+    const token = localStorage.getItem('accessToken')
+    if (!token) {
+      setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const orderData = {
+        userId: user._id,
+        items: cartItems.map((item) => ({
+          productId: item.id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+          image: item.image
+        })),
+        totalAmount: total,
+        shippingFee,
+        name,
+        phone,
+        address,
+        notes: notes || undefined,
+        requireInvoice,
+        discountCode: discountCode || undefined
+      }
+
+      interface OrderResponse {
+        _id: string
+      }
+
+      const response = await axios.post<OrderResponse>(API_URL_ORDER, orderData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+
+      if (response.data && response.data._id) {
+        setCurrentStep(CheckoutStep.COMPLETION)
+        // Clear cart after successful order
+        localStorage.removeItem('cart')
+        setCartItems([])
+      } else {
+        setError('Đặt hàng thất bại. Vui lòng thử lại!')
+      }
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
+          setError('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.')
+        } else {
+          setError(error.response?.data?.message || 'Đặt hàng thất bại. Vui lòng thử lại!')
+        }
+      } else {
+        setError('Đã xảy ra lỗi không mong muốn. Vui lòng thử lại!')
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleBack = () => {
+    if (currentStep > CheckoutStep.CART) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+
+  const handleContinueShopping = () => {
+    // Navigate to the mouse page or another category page
+    navigate('/')
+  }
+
+  const handleRemoveItem = (id: string) => {
+    const updatedCart = cartItems.filter((item) => item.id !== id)
+    setCartItems(updatedCart)
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
+  }
+
+  const handleUpdateQuantity = (id: string, newQuantity: number) => {
+    if (newQuantity < 1) return
+    const updatedCart = cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item))
+    setCartItems(updatedCart)
+    localStorage.setItem('cart', JSON.stringify(updatedCart))
   }
 
   const renderCartStep = () => (
     <>
-      {product && (
-        <div className='border-t border-b border-gray-200 py-4 mb-6'>
-          <div className='flex justify-between items-start mb-4'>
-            <img src={product.image} alt={product.name} className='w-16 h-16 object-cover rounded m-1' />
-            <div>
-              <h3 className='font-medium'>{product.name}</h3>
-              <button className='text-red-500 text-sm mt-1'>Xoá</button>
-            </div>
-            <div className='text-right'>
-              <p className='font-medium'>{product.price.toLocaleString()}đ</p>
-              <div className='flex items-center justify-end mt-1'>
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className='w-6 h-6 border border-gray-300 rounded flex items-center justify-center'
-                >
-                  -
-                </button>
-                <span className='mx-2'>{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className='w-6 h-6 border border-gray-300 rounded flex items-center justify-center'
-                >
-                  +
-                </button>
+      {cartItems.length === 0 ? (
+        <div className='text-center py-4'>
+          <p className='text-gray-600'>Giỏ hàng của bạn đang trống.</p>
+          <button
+            onClick={handleContinueShopping}
+            className='mt-4 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors'
+          >
+            Mua sắm ngay
+          </button>
+        </div>
+      ) : (
+        <>
+          {cartItems.map((item) => (
+            <div key={item.id} className='border-t border-b border-gray-200 py-4 mb-6'>
+              <div className='flex justify-between items-start mb-4'>
+                <img src={item.image} alt={item.name} className='w-16 h-16 object-cover rounded m-1' />
+                <div>
+                  <h3 className='font-medium'>{item.name}</h3>
+                  <button onClick={() => handleRemoveItem(item.id)} className='text-red-500 text-sm mt-1'>
+                    Xoá
+                  </button>
+                </div>
+                <div className='text-right'>
+                  <p className='font-medium'>{item.price.toLocaleString()}đ</p>
+                  <div className='flex items-center justify-end mt-1'>
+                    <button
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                      className='w-6 h-6 border border-gray-300 rounded flex items-center justify-center'
+                      disabled={item.quantity <= 1}
+                    >
+                      -
+                    </button>
+                    <span className='mx-2'>{item.quantity}</span>
+                    <button
+                      onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                      className='w-6 h-6 border border-gray-300 rounded flex items-center justify-center'
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
               </div>
             </div>
+          ))}
+
+          {/* Discount code */}
+          {/* <div className='mb-6'>
+            <button
+              onClick={() => setShowDiscountInput(!showDiscountInput)}
+              className='flex items-center text-gray-600'
+            >
+              Sử dụng mã giảm giá <span className='ml-1'>{showDiscountInput ? '▲' : '▼'}</span>
+            </button>
+            {showDiscountInput && (
+              <div className='mt-2 flex'>
+                <input
+                  type='text'
+                  value={discountCode}
+                  onChange={(e) => setDiscountCode(e.target.value)}
+                  placeholder='Nhập mã giảm giá'
+                  className='flex-1 border border-gray-300 rounded-l px-3 py-2'
+                />
+                <button className='bg-blue-600 text-white px-4 py-2 rounded-r'>Áp dụng</button>
+              </div>
+            )}
+          </div> */}
+
+          {/* Summary */}
+          <div className='border-t border-gray-200 pt-4 mb-6'>
+            <div className='flex justify-between mb-2'>
+              <span>Tạm tính:</span>
+              <span>{subtotal.toLocaleString()}đ</span>
+            </div>
+            <div className='flex justify-between mb-2'>
+              <span>Phí vận chuyển:</span>
+              <span>{shippingFee.toLocaleString()}đ</span>
+            </div>
+            <div className='flex justify-between font-bold text-lg'>
+              <span>Tổng tiền:</span>
+              <span>{total.toLocaleString()}đ</span>
+            </div>
           </div>
-        </div>
+
+          <div className='flex gap-4'>
+            <button
+              onClick={handleContinueShopping}
+              className='w-1/2 bg-gray-300 text-black py-3 rounded font-medium hover:bg-gray-400 transition-colors'
+            >
+              TIẾP TỤC MUA HÀNG
+            </button>
+            <button
+              onClick={handleCheckout}
+              className='w-1/2 bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'
+            >
+              ĐẶT HÀNG NGAY
+            </button>
+          </div>
+        </>
       )}
-
-      {/* Discount code */}
-      <div className='mb-6'>
-        <button onClick={() => setShowDiscountInput(!showDiscountInput)} className='flex items-center text-gray-600'>
-          Sử dụng mã giảm giá <span className='ml-1'>{showDiscountInput ? '▲' : '▼'}</span>
-        </button>
-        {showDiscountInput && (
-          <div className='mt-2 flex'>
-            <input
-              type='text'
-              value={discountCode}
-              onChange={(e) => setDiscountCode(e.target.value)}
-              placeholder='Nhập mã giảm giá'
-              className='flex-1 border border-gray-300 rounded-l px-3 py-2'
-            />
-            <button className='bg-blue-600 text-white px-4 py-2 rounded-r'>Áp dụng</button>
-          </div>
-        )}
-      </div>
-
-      {/* Summary */}
-      <div className='border-t border-gray-200 pt-4 mb-6'>
-        <div className='flex justify-between mb-2'>
-          <span>Phí vận chuyển:</span>
-          <span>{shippingFee.toLocaleString()}đ</span>
-        </div>
-        <div className='flex justify-between font-bold text-lg'>
-          <span>Tổng tiền:</span>
-          <span>{total.toLocaleString()}đ</span>
-        </div>
-      </div>
-
-      <button
-        onClick={handleCheckout}
-        className='w-full bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'
-      >
-        ĐẶT HÀNG NGAY
-      </button>
     </>
   )
 
@@ -117,6 +299,7 @@ const CartPage = () => {
           className='w-full border border-gray-300 rounded px-3 py-2'
           value={name}
           onChange={(e) => setName(e.target.value)}
+          placeholder='Họ và tên'
           required
         />
       </div>
@@ -129,6 +312,7 @@ const CartPage = () => {
           className='w-full border border-gray-300 rounded px-3 py-2'
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          placeholder='Số điện thoại (10 số)'
           required
         />
       </div>
@@ -141,6 +325,7 @@ const CartPage = () => {
           rows={3}
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          placeholder='Địa chỉ giao hàng'
           required
         />
       </div>
@@ -153,11 +338,12 @@ const CartPage = () => {
           rows={2}
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
+          placeholder='Ghi chú cho đơn hàng'
         />
       </div>
 
       {/* Invoice checkbox */}
-      <div className='mb-4'>
+      {/* <div className='mb-4'>
         <label className='flex items-center'>
           <input
             type='checkbox'
@@ -167,10 +353,14 @@ const CartPage = () => {
           />
           <span className='ml-2'>Xuất hoá đơn cho đơn hàng</span>
         </label>
-      </div>
+      </div> */}
 
       {/* Order summary */}
       <div className='border-t border-gray-200 pt-4 mb-6'>
+        <div className='flex justify-between mb-2'>
+          <span>Tạm tính:</span>
+          <span>{subtotal.toLocaleString()}đ</span>
+        </div>
         <div className='flex justify-between mb-2'>
           <span>Phí vận chuyển:</span>
           <span>{shippingFee.toLocaleString()}đ</span>
@@ -181,31 +371,58 @@ const CartPage = () => {
         </div>
       </div>
 
-      <button
-        type='submit'
-        className='w-full bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'
-      >
-        ĐẶT HÀNG NGAY
-      </button>
+      <div className='flex gap-4'>
+        <button
+          type='button'
+          onClick={handleBack}
+          className='w-1/2 bg-gray-300 text-black py-3 rounded font-medium hover:bg-gray-400 transition-colors'
+        >
+          TRỞ LẠI
+        </button>
+        <button
+          type='submit'
+          className='w-1/2 bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'
+        >
+          ĐẶT HÀNG NGAY
+        </button>
+      </div>
     </form>
   )
 
   const renderPaymentStep = () => (
     <div className='text-center py-8'>
       <h2 className='text-xl font-bold mb-4'>Trang Thanh Toán</h2>
-      <p className='mb-6'>Đây là nơi bạn sẽ tích hợp cổng thanh toán</p>
+      {error && <div className='mb-4 text-red-500'>{error}</div>}
       <div className='border-t border-gray-200 pt-4 mb-6'>
+        <div className='flex justify-between mb-2'>
+          <span>Tạm tính:</span>
+          <span>{subtotal.toLocaleString()}đ</span>
+        </div>
+        <div className='flex justify-between mb-2'>
+          <span>Phí vận chuyển:</span>
+          <span>{shippingFee.toLocaleString()}đ</span>
+        </div>
         <div className='flex justify-between font-bold text-lg'>
           <span>Tổng tiền:</span>
           <span>{total.toLocaleString()}đ</span>
         </div>
       </div>
-      <button
-        onClick={() => setCurrentStep(CheckoutStep.COMPLETION)}
-        className='w-full bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'
-      >
-        HOÀN TẤT ĐƠN HÀNG
-      </button>
+      <div className='flex gap-4'>
+        <button
+          type='button'
+          onClick={handleBack}
+          className='w-1/2 bg-gray-300 text-black py-3 rounded font-medium hover:bg-gray-400 transition-colors'
+        >
+          TRỞ LẠI
+        </button>
+        <button
+          onClick={handlePlaceOrder}
+          disabled={loading}
+          className='w-1/2 bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400'
+        >
+          {loading ? 'ĐANG XỬ LÝ...' : 'HOÀN TẤT ĐƠN HÀNG'}
+        </button>
+      </div>
     </div>
   )
 
@@ -224,11 +441,13 @@ const CartPage = () => {
       </div>
       <h2 className='text-xl font-bold mb-2'>Đặt hàng thành công!</h2>
       <p className='text-gray-600 mb-6'>Cảm ơn bạn đã đặt hàng</p>
-      <Link to='/'>
-        <button className='w-full bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'>
-          QUAY LẠI TRANG CHỦ
-        </button>
-      </Link>
+      <div className='flex gap-4 justify-center'>
+        <Link to='/' className='w-1/2'>
+          <button className='w-full bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors'>
+            QUAY LẠI TRANG CHỦ
+          </button>
+        </Link>
+      </div>
     </div>
   )
 
@@ -249,7 +468,7 @@ const CartPage = () => {
     <div className='max-w-md mx-auto p-4 font-sans'>
       <h1 className='text-2xl font-bold mb-6'>
         {currentStep === CheckoutStep.CART
-          ? 'Mua thêm sản phẩm khác'
+          ? 'Thông tin giỏ hàng'
           : currentStep === CheckoutStep.INFO
             ? 'Thông tin khách mua hàng'
             : currentStep === CheckoutStep.PAYMENT
@@ -282,6 +501,7 @@ const CartPage = () => {
         ></div>
       </div>
 
+      {error && <div className='mb-4 text-red-500'>{error}</div>}
       {renderCurrentStep()}
     </div>
   )

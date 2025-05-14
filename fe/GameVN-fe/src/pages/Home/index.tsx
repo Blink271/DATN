@@ -17,10 +17,26 @@ const Home: React.FC = () => {
 
           {/* Banners */}
           <div className='grid grid-cols-2 gap-4'>
-            <img src='https://picsum.photos/400/200?random=1' alt='Banner 1' className='rounded-lg shadow-md w-full' />
-            <img src='https://picsum.photos/400/200?random=2' alt='Banner 2' className='rounded-lg shadow-md w-full' />
-            <img src='https://picsum.photos/400/200?random=3' alt='Banner 3' className='rounded-lg shadow-md w-full' />
-            <img src='https://picsum.photos/400/200?random=4' alt='Banner 4' className='rounded-lg shadow-md w-full' />
+            <img
+              src='https://file.hstatic.net/200000722513/file/thu_cu_doi_moi_banner_web_slider_800x400.jpg'
+              alt='Banner 1'
+              className='rounded-lg shadow-md w-full'
+            />
+            <img
+              src='https://file.hstatic.net/200000722513/file/thang_04_pc_tang_man_banner_web_slider_800x400.jpg'
+              alt='Banner 2'
+              className='rounded-lg shadow-md w-full'
+            />
+            <img
+              src='https://file.hstatic.net/200000722513/file/thang_04_laptop_gaming_banner_web_slider_800x400.jpg'
+              alt='Banner 3'
+              className='rounded-lg shadow-md w-full'
+            />
+            <img
+              src='https://file.hstatic.net/200000722513/file/man_hinh_thang_04_banner_web_slider_800x400.jpg'
+              alt='Banner 4'
+              className='rounded-lg shadow-md w-full'
+            />
           </div>
         </div>
       </div>

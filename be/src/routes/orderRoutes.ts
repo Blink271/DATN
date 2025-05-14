@@ -1,36 +1,42 @@
-// import express from 'express';
-// import { createOrder, getAllOrders, getOrderById } from '../services/orderService';
+import * as express from 'express';
+import { OrderController } from '../controllers/orderController';
+import { asyncHandler, BadRequestError } from '../utils/errors';
 
-// const router = express.Router();
+const router = express.Router();
+const orderController = new OrderController();
 
-// router.post('/', async (req, res) => {
-//   try {
-//     const order = await createOrder(req.body);
-//     res.status(201).json(order);
-//   } catch (error) {
-//     res.status(400).json({ error: (error instanceof Error) ? error.message : 'An unknown error occurred' });
-//   }
-// });
+router.post(
+  '/',
+  asyncHandler(async (req: express.Request, res: express.Response) => {
+    await orderController.createOrder(req, res);
+  })
+);
 
-// router.get('/', async (req, res) => {
-//   try {
-//     const orders = await getAllOrders();
-//     res.status(200).json(orders);
-//   } catch (error) {
-//     res.status(500).json({ error: (error instanceof Error) ? error.message : 'An unknown error occurred' });
-//   }
-// });
+router.get(
+  '/',
+  asyncHandler(async (req: express.Request, res: express.Response) => {
+    await orderController.getAllOrders(req, res);
+  })
+);
 
-// router.get('/:id', async (req: express.Request<{ id: string }>, res: express.Response) => {
-//   try {
-//     const order = await getOrderById(req.params.id);
-//     if (!order) {
-//       return res.status(404).json({ message: 'Order not found' });
-//     }
-//     res.status(200).json(order);
-//   } catch (error) {
-//     res.status(500).json({ error: (error instanceof Error) ? error.message : 'An unknown error occurred' });
-//   }
-// });
+router.get(
+  '/:id',
+  asyncHandler(async (req: express.Request, res: express.Response) => {
+    await orderController.getOrderById(req, res);
+  })
+);
 
-// export default router;
+router.put(
+  '/:id',
+  asyncHandler(async (req: express.Request, res: express.Response) => {
+    const { status } = req.body;
+    if (!status || !['pending', 'completed', 'canceled'].includes(status)) {
+      throw new BadRequestError('Invalid status');
+    }
+    await orderController.updateOrderStatus(req, res);
+  })
+);
+
+
+
+export default router;

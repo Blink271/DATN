@@ -52,14 +52,14 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
             className='bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded transition-colors'
             disabled={loading || isSubmitting}
           >
-            Cancel
+            Hủy
           </button>
           <button
             onClick={handleSave}
             className='bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors'
             disabled={loading || isSubmitting}
           >
-            {isSubmitting ? 'Saving...' : 'Save'}
+            {isSubmitting ? 'Lưu...' : 'Lưu'}
           </button>
         </div>
       </div>

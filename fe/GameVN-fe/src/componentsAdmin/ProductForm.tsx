@@ -13,7 +13,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
   return (
     <div className='space-y-4'>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Name</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Tên sản phẩm</label>
         <input
           type='text'
           value={formData.name}
@@ -23,7 +23,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Brand</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Thuơng hiệu</label>
         <input
           type='text'
           value={formData.brand}
@@ -33,7 +33,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Description</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Mô tả</label>
         <textarea
           value={formData.description}
           onChange={(e) => setFormData({ ...formData, description: e.target.value })}
@@ -42,7 +42,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Price</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Giá</label>
         <input
           type='number'
           value={formData.price}
@@ -52,7 +52,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Stock</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Số lượng</label>
         <input
           type='number'
           value={formData.stock}
@@ -62,7 +62,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Image URL</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Đường link hình ảnh</label>
         <input
           type='text'
           value={formData.image_url}
@@ -72,16 +72,16 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         />
       </div>
       <div>
-        <label className='block text-sm font-medium text-gray-700 mb-1'>Category</label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Danh mục</label>
         <select
           value={formData.category}
           onChange={(e) => handleCategoryChange(e.target.value as 'mouse' | 'keyboard' | 'headphone')}
           className='w-full p-2 border rounded'
           disabled={loading}
         >
-          <option value='mouse'>Mouse</option>
-          <option value='keyboard'>Keyboard</option>
-          <option value='headphone'>Headphone</option>
+          <option value='mouse'>Chuột</option>
+          <option value='keyboard'>Bàn phím</option>
+          <option value='headphone'>Tai nghe</option>
         </select>
       </div>
       <CategoryFields category={formData.category} formData={formData} setFormData={setFormData} />

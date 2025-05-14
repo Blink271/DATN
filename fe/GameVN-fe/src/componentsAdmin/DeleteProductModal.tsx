@@ -12,10 +12,10 @@ const DeleteProductModal: React.FC<DeleteProductModalProps> = ({ isOpen, onClose
   return (
     <Modal isOpen={isOpen} onClose={onClose} title='Delete Product'>
       <div className='space-y-4'>
-        <p>Are you sure you want to delete this product?</p>
+        <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
         <div className='flex justify-end space-x-2'>
           <button onClick={onClose} className='bg-gray-500 text-white px-4 py-2 rounded' disabled={loading}>
-            Cancel
+            Hủy
           </button>
           <button
             onClick={async () => {
@@ -27,7 +27,7 @@ const DeleteProductModal: React.FC<DeleteProductModalProps> = ({ isOpen, onClose
             className='bg-red-500 text-white px-4 py-2 rounded'
             disabled={loading}
           >
-            Delete
+            Xóa
           </button>
         </div>
       </div>

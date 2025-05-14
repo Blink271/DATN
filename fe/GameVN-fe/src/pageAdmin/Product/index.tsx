@@ -147,7 +147,7 @@ const AdminProducts: React.FC = () => {
         <AdminSidebar />
         <main className='flex-1 p-6 bg-gray-50 overflow-auto'>
           <div className='flex justify-between mb-4'>
-            <h2 className='text-2xl font-bold'>Product Management</h2>
+            <h2 className='text-2xl font-bold'>Quản lý sản phẩm</h2>
             <button
               onClick={() => {
                 resetForm()
@@ -156,11 +156,11 @@ const AdminProducts: React.FC = () => {
               className='bg-green-500 text-white px-4 py-2 rounded'
               disabled={loading || localLoading}
             >
-              Add Product
+              Thêm sản phẩm
             </button>
           </div>
           {loading || localLoading ? (
-            <div className='text-center'>Loading...</div>
+            <div className='text-center'>Đang tải...</div>
           ) : (
             <ProductTable
               products={products}

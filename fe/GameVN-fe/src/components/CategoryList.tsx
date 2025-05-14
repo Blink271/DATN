@@ -1,22 +1,11 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+import { FaKeyboard, FaMouse, FaHeadphones } from 'react-icons/fa'
 
 const categories = [
-  { icon: 'fas fa-laptop', name: 'Laptop' },
-  { icon: 'fas fa-gamepad', name: 'Laptop Gaming' },
-  { icon: 'fas fa-desktop', name: 'PC GVN' },
-  { icon: 'fas fa-microchip', name: 'Main, CPU, VGA' },
-  { icon: 'fas fa-hdd', name: 'Case, Nguồn, Tản' },
-  { icon: 'fas fa-memory', name: 'Ổ cứng, RAM, Thẻ nhớ' },
-  { icon: 'fas fa-volume-up', name: 'Loa, Micro, Webcam' },
-  { icon: 'fas fa-tv', name: 'Màn hình' },
-  { icon: 'fas fa-keyboard', name: 'Bàn phím' },
-  { icon: 'fas fa-mouse', name: 'Chuột & Lót chuột' },
-  { icon: 'fas fa-headphones', name: 'Tai nghe' },
-  { icon: 'fas fa-chair', name: 'Ghế - Bàn' },
-  { icon: 'fas fa-network-wired', name: 'Phần mềm, mạng' },
-  { icon: 'fas fa-gamepad', name: 'Handheld, Console' },
-  { icon: 'fas fa-plug', name: 'Phụ kiện' },
-  { icon: 'fas fa-concierge-bell', name: 'Dịch vụ' }
+  { icon: FaKeyboard, name: 'Bàn phím', cat: 'keyboard' },
+  { icon: FaMouse, name: 'Chuột', cat: 'mouse' },
+  { icon: FaHeadphones, name: 'Tai nghe', cat: 'headphone' },
 ]
 
 const CategoryList: React.FC = () => {
@@ -26,9 +15,9 @@ const CategoryList: React.FC = () => {
         <li className='font-bold text-lg'>Danh mục</li>
         {categories.map((category, index) => (
           <li key={index}>
-            <a href='#' className='flex items-center gap-2 hover:text-blue-600'>
-              <i className={category.icon}></i> {category.name}
-            </a>
+            <Link to={`/${category.cat}`} className='flex items-center gap-2 hover:text-blue-600'>
+              <category.icon/> <span>{category.name}</span>
+            </Link>
           </li>
         ))}
       </ul>

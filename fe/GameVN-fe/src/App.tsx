@@ -13,6 +13,8 @@ import AdminProducts from './pageAdmin/Product'
 import AdminOrders from './pageAdmin/Order'
 import AdminDiscounts from './pageAdmin/Discount'
 import AdminBanners from './pageAdmin/Banner'
+import SearchPage from './pages/Search'
+import CheckOrderPage from './pages/CheckOrder'
 
 const App: React.FC = () => {
   return (
@@ -30,6 +32,8 @@ const App: React.FC = () => {
                   <Route path='/mouse' element={<Mouse />} />
                   <Route path='/product/mouse/:id' element={<DetailsPage />} />
                   <Route path='/cart' element={<CartPage />} />
+                  <Route path='/Search' element={<SearchPage />} />
+                  <Route path='/check' element={<CheckOrderPage />} />
                 </Routes>
               </main>
               <Footer />
@@ -50,9 +54,9 @@ const App: React.FC = () => {
                   <Route path='/orders' element={<AdminOrders />} />
                   <Route path='/discounts' element={<AdminDiscounts />} />
                   <Route path='/banners' element={<AdminBanners />} />
+                  
                 </Routes>
               </main>
-              <Footer />
             </div>
           }
         />

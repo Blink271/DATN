@@ -18,34 +18,34 @@ const AdminSidebar: React.FC = () => {
         <ul className='space-y-2'>
           <li>
             <Link to='/admin' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Dashboard' : <span className='text-sm'>D</span>}
+              {isOpen ? 'Tổng quát' : <span className='text-sm'>D</span>}
             </Link>
           </li>
           <li>
             <Link to='/admin/users' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Users' : <span className='text-sm'>U</span>}
+              {isOpen ? 'Quản lý người dùng' : <span className='text-sm'>U</span>}
             </Link>
           </li>
           <li>
             <Link to='/admin/products' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Products' : <span className='text-sm'>P</span>}
+              {isOpen ? 'Quản lý sản phẩm' : <span className='text-sm'>P</span>}
             </Link>
           </li>
           <li>
             <Link to='/admin/orders' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Orders' : <span className='text-sm'>O</span>}
+              {isOpen ? 'Quản lý đơn hàng' : <span className='text-sm'>O</span>}
             </Link>
           </li>
-          <li>
+          {/* <li>
             <Link to='/admin/discounts' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Discounts' : <span className='text-sm'>D</span>}
+              {isOpen ? 'Quản lý giảm giá' : <span className='text-sm'>D</span>}
             </Link>
           </li>
           <li>
             <Link to='/admin/banners' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Banners' : <span className='text-sm'>B</span>}
+              {isOpen ? 'Quản lý quản cáo' : <span className='text-sm'>B</span>}
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </aside>

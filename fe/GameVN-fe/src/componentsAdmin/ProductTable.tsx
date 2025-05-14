@@ -14,12 +14,12 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete,
       <table className='min-w-full'>
         <thead>
           <tr className='bg-gray-100'>
-            <th className='p-3 text-left'>Name</th>
-            <th className='p-3 text-left'>Brand</th>
-            <th className='p-3 text-left'>Price</th>
-            <th className='p-3 text-left'>Stock</th>
-            <th className='p-3 text-left'>Category</th>
-            <th className='p-3 text-left'>Actions</th>
+            <th className='p-3 text-left'>Tên</th>
+            <th className='p-3 text-left'>Thương hiệu</th>
+            <th className='p-3 text-left'>Giá</th>
+            <th className='p-3 text-left'>Số lượng</th>
+            <th className='p-3 text-left'>Danh mục</th>
+            <th className='p-3 text-left'></th>
           </tr>
         </thead>
         <tbody>
@@ -29,7 +29,13 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete,
               <td className='p-3'>{product.brand}</td>
               <td className='p-3'>{product.price}đ</td>
               <td className='p-3'>{product.stock}</td>
-              <td className='p-3'>{product.category}</td>
+              <td className='p-3'>
+  {{
+    mouse: 'Chuột',
+    keyboard: 'Bàn phím',
+    headphone: 'Tai nghe'
+  }[product.category] || product.category}
+</td>
               <td className='p-3'>
                 <button
                   onClick={() => onEdit(product)}

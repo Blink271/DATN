@@ -1,117 +1,218 @@
-import User, { IUser } from '../models/User';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { validate } from 'email-validator';
+import User, { IUser } from '../models/User';
 import { BadRequestError, UnauthorizedError } from '../utils/errors';
+import mongoose from 'mongoose';
+
+interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  address?: string;
+  role?: 'admin' | 'user';
+}
+
+interface UpdateData {
+  name?: string;
+  email?: string;
+  phone?: string;
+  address?: string;
+  role?: 'admin' | 'user';
+}
 
 export class UserService {
-  async register(userData: Partial<IUser>): Promise<IUser> {
-    if (!validate(userData.email!)) {
+  async register(data: RegisterData): Promise<{ user: Partial<IUser>, accessToken: string }> {
+    // Validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new BadRequestError('Invalid email format');
     }
-    if (userData.password!.length < 8) {
+    if (data.password.length < 8) {
       throw new BadRequestError('Password must be at least 8 characters');
     }
+    if (!/^\d{10}$/.test(data.phone)) {
+      throw new BadRequestError('Phone number must be 10 digits');
+    }
+    if (!data.name.trim() || data.name.length < 2) {
+      throw new BadRequestError('Name must be at least 2 characters');
+    }
+    if (data.address && data.address.length > 200) {
+      throw new BadRequestError('Address must be less than 200 characters');
+    }
 
-    const existingUser = await User.findOne({ email: userData.email });
+    // Check existing email
+    const existingUser = await User.findOne({ email: data.email });
     if (existingUser) {
       throw new BadRequestError('Email already exists');
     }
 
-    const hashedPassword = await bcrypt.hash(userData.password!, 10);
-    return await User.create({
-      ...userData,
+    // Hash password
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    // Create user
+    const user = await User.create({
+      name: data.name,
+      email: data.email,
       password: hashedPassword,
-      role: userData.role || 'user',
-      isActive: true
+      phone: data.phone,
+      address: data.address || '',
+      role: data.role || 'user',
+      created_at: new Date()
     });
+
+    // Generate JWT
+    const accessToken = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1h' }
+    );
+
+    // Remove password from response
+    const { password: pwd, ...userData } = user.toObject();
+    return { user: userData, accessToken };
   }
 
-  async login(email: string, password: string): Promise<{ user: IUser; accessToken: string; refreshToken: string }> {
-    const user = await User.findOne({ email, isActive: true });
+  async addUser(data: RegisterData): Promise<{ user: Partial<IUser>, accessToken: string }> {
+    // Validation
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
+      throw new BadRequestError('Invalid email format');
+    }
+    if (data.password.length < 8) {
+      throw new BadRequestError('Password must be at least 8 characters');
+    }
+    if (!/^\d{10}$/.test(data.phone)) {
+      throw new BadRequestError('Phone number must be 10 digits');
+    }
+    if (!data.name.trim() || data.name.length < 2) {
+      throw new BadRequestError('Name must be at least 2 characters');
+    }
+    if (data.address && data.address.length > 200) {
+      throw new BadRequestError('Address must be less than 200 characters');
+    }
+
+    // Check existing email
+    const existingUser = await User.findOne({ email: data.email });
+    if (existingUser) {
+      throw new BadRequestError('Email already exists');
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+
+    // Create user
+    const user = await User.create({
+      name: data.name,
+      email: data.email,
+      password: hashedPassword,
+      phone: data.phone,
+      address: data.address || '',
+      role: data.role || 'user',
+      created_at: new Date()
+    });
+
+    // Generate JWT
+    const accessToken = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: '1h' }
+    );
+
+    // Remove password from response
+    const { password: pwd, ...userData } = user.toObject();
+    return { user: userData, accessToken };
+  }
+
+  async login(email: string, password: string): Promise<{ user: Partial<IUser>, accessToken: string }> {
+    // Find user
+    const user = await User.findOne({ email });
     if (!user) {
       throw new UnauthorizedError('Invalid credentials');
     }
 
+    // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       throw new UnauthorizedError('Invalid credentials');
     }
 
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = this.generateRefreshToken(user);
-    
-    user.refreshToken = refreshToken;
-    await user.save();
-
-    return { user, accessToken, refreshToken };
-  }
-
-  async refreshToken(userId: string, refreshToken: string): Promise<string> {
-    const user = await User.findById(userId);
-    if (!user || user.refreshToken !== refreshToken) {
-      throw new UnauthorizedError('Invalid refresh token');
-    }
-
-    return this.generateAccessToken(user);
-  }
-
-  private generateAccessToken(user: IUser): string {
-    return jwt.sign(
+    // Generate JWT
+    const accessToken = jwt.sign(
       { userId: user._id, role: user.role },
       process.env.JWT_SECRET!,
       { expiresIn: '1h' }
     );
+
+    // Remove password from response
+    const { password: pwd, ...userData } = user.toObject();
+    return { user: userData, accessToken };
   }
 
-  private generateRefreshToken(user: IUser): string {
-    return jwt.sign(
-      { userId: user._id },
-      process.env.JWT_REFRESH_SECRET!,
-      { expiresIn: '7d' }
-    );
+  async getAllUsers(): Promise<Partial<IUser>[]> {
+    const users = await User.find().select('-password');
+    return users.map(user => user.toObject());
   }
 
-  async getProfile(userId: string): Promise<Partial<IUser> | null> {
-    return User.findById(userId).select('-password -__v -refreshToken');
-  }
-
-  async updateUser(userId: string, updateData: Partial<IUser>, currentUserRole: string): Promise<IUser | null> {
-    if (updateData.role && currentUserRole !== 'admin') {
-      throw new BadRequestError('Only admin can change roles');
+  async getUserById(id: string): Promise<Partial<IUser>> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError('Invalid user ID');
     }
-    if (updateData.email && !validate(updateData.email)) {
+    const user = await User.findById(id).select('-password');
+    if (!user) {
+      throw new BadRequestError('User not found');
+    }
+    return user.toObject();
+  }
+
+  async updateUser(id: string, data: UpdateData): Promise<Partial<IUser>> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError('Invalid user ID');
+    }
+
+    // Validation
+    if (data.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)) {
       throw new BadRequestError('Invalid email format');
     }
-    if (updateData.password && updateData.password.length < 8) {
-      throw new BadRequestError('Password must be at least 8 characters');
+    if (data.phone && !/^\d{10}$/.test(data.phone)) {
+      throw new BadRequestError('Phone number must be 10 digits');
+    }
+    if (data.name && (!data.name.trim() || data.name.length < 2)) {
+      throw new BadRequestError('Name must be at least 2 characters');
+    }
+    if (data.address && data.address.length > 200) {
+      throw new BadRequestError('Address must be less than 200 characters');
+    }
+    if (data.role && !['admin', 'user'].includes(data.role)) {
+      throw new BadRequestError('Invalid role');
     }
 
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(updateData.password, 10);
+    // Check existing email (if updated)
+    if (data.email) {
+      const existingUser = await User.findOne({ email: data.email, _id: { $ne: id } });
+      if (existingUser) {
+        throw new BadRequestError('Email already exists');
+      }
     }
 
-    return User.findByIdAndUpdate(userId, updateData, { new: true, runValidators: true })
-      .select('-password -__v -refreshToken');
+    const user = await User.findByIdAndUpdate(
+      id,
+      { $set: data },
+      { new: true, runValidators: true }
+    ).select('-password');
+
+    if (!user) {
+      throw new BadRequestError('User not found');
+    }
+
+    return user.toObject();
   }
 
-  async deleteUser(userId: string): Promise<void> {
-    await User.findByIdAndUpdate(userId, { isActive: false });
-  }
-
-  async getAllUsers(page: number = 1, limit: number = 10): Promise<{ users: IUser[], total: number }> {
-    const skip = (page - 1) * limit;
-    const [users, total] = await Promise.all([
-      User.find({ isActive: true })
-        .select('-password -__v -refreshToken')
-        .skip(skip)
-        .limit(limit),
-      User.countDocuments({ isActive: true })
-    ]);
-    return { users, total };
-  }
-
-  async getUserById(userId: string): Promise<IUser | null> {
-    return User.findById(userId).select('-password -__v -refreshToken');
+  async deleteUser(id: string): Promise<void> {
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      throw new BadRequestError('Invalid user ID');
+    }
+    const user = await User.findByIdAndDelete(id);
+    if (!user) {
+      throw new BadRequestError('User not found');
+    }
   }
 }

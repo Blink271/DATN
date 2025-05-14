@@ -1,3 +1,5 @@
+//Product.ts
+
 import { Document, Schema, model } from 'mongoose';
 
 export interface IProduct extends Document {

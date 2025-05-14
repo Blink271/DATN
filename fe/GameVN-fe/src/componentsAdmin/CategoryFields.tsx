@@ -47,7 +47,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
             }
             className='mr-2'
           />
-          Wireless
+          Kết nối không dây
         </label>
         <label className='flex items-center'>
           <input
@@ -82,7 +82,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
       <>
         <input
           type='text'
-          placeholder='Switch Type'
+          placeholder='Loại Switch'
           value={formData.keyboardDetails?.switch_type || ''}
           onChange={(e) =>
             setFormData({
@@ -94,7 +94,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
         />
         <input
           type='text'
-          placeholder='Layout'
+          placeholder='Bố cục'
           value={formData.keyboardDetails?.layout || ''}
           onChange={(e) =>
             setFormData({
@@ -105,8 +105,8 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
           className='w-full p-2 border rounded'
         />
         <input
-          type='text'
-          placeholder='Key Rollover'
+          type='number'
+          placeholder='Số lượng phím nhận cùng lúc'
           value={formData.keyboardDetails?.key_rollover || ''}
           onChange={(e) =>
             setFormData({
@@ -128,7 +128,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
             }
             className='mr-2'
           />
-          Wireless
+          Kết nối không dây
         </label>
         <label className='flex items-center'>
           <input
@@ -149,9 +149,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
   } else if (category === 'headphone') {
     return (
       <>
-        <input
-          type='text'
-          placeholder='Driver Size'
+        <select
           value={formData.headphoneDetails?.driver_size || ''}
           onChange={(e) =>
             setFormData({
@@ -160,10 +158,14 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
             })
           }
           className='w-full p-2 border rounded'
-        />
+        >
+          <option value=''>Loại tai nghe</option>
+          <option value='nhét tai'>Nhét tai</option>
+          <option value='trùm tai'>Trùm tai</option>
+        </select>
         <input
           type='text'
-          placeholder='Frequency Response'
+          placeholder='Tần số phản hồi'
           value={formData.headphoneDetails?.frequency_response || ''}
           onChange={(e) =>
             setFormData({
@@ -185,7 +187,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
             }
             className='mr-2'
           />
-          Wireless
+          Kết nối không dây
         </label>
         <label className='flex items-center'>
           <input
@@ -213,7 +215,7 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
             }
             className='mr-2'
           />
-          Surround Sound
+          Âm thanh vòm
         </label>
       </>
     )

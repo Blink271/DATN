@@ -46,14 +46,14 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             className='bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition-colors'
             disabled={loading}
           >
-            Cancel
+            Hủy
           </button>
           <button
             onClick={handleSave}
             className='bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors'
             disabled={loading}
           >
-            {loading ? 'Saving...' : 'Save'}
+            {loading ? 'Lưu...' : 'Lưu'}
           </button>
         </div>
       </div>
