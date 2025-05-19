@@ -391,16 +391,20 @@ const CartPage = () => {
 
   const renderPaymentStep = () => (
     <div className='text-center py-8'>
-      <h2 className='text-xl font-bold mb-4'>Trang Thanh Toán</h2>
+      <h2 className='text-xl font-bold mb-4'>Thông tin đặt hàng</h2>
       {error && <div className='mb-4 text-red-500'>{error}</div>}
       <div className='border-t border-gray-200 pt-4 mb-6'>
-        <div className='flex justify-between mb-2'>
-          <span>Tạm tính:</span>
-          <span>{subtotal.toLocaleString()}đ</span>
+        <div className='flex justify-between font-bold text-lg'>
+          <span>Họ tên:</span>
+          <span>{name}</span>
         </div>
-        <div className='flex justify-between mb-2'>
-          <span>Phí vận chuyển:</span>
-          <span>{shippingFee.toLocaleString()}đ</span>
+        <div className='flex justify-between font-bold text-lg'>
+          <span>SĐT</span>
+          <span>{phone}</span>
+        </div>
+        <div className='flex justify-between font-bold text-lg'>
+          <span>Địa chỉ</span>
+          <span>{address}</span>
         </div>
         <div className='flex justify-between font-bold text-lg'>
           <span>Tổng tiền:</span>
@@ -420,7 +424,7 @@ const CartPage = () => {
           disabled={loading}
           className='w-1/2 bg-blue-600 text-white py-3 rounded font-medium hover:bg-blue-700 transition-colors disabled:bg-gray-400'
         >
-          {loading ? 'ĐANG XỬ LÝ...' : 'HOÀN TẤT ĐƠN HÀNG'}
+          {loading ? 'ĐANG XỬ LÝ...' : 'XÁC NHẬN ĐẶT HÀNG'}
         </button>
       </div>
     </div>

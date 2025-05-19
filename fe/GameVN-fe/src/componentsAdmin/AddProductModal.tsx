@@ -32,7 +32,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Add New Product'>
+    <Modal isOpen={isOpen} onClose={onClose} title='Thêm sản phẩm'>
       <div className='space-y-4'>
         <ProductForm
           formData={formData}

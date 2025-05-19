@@ -18,7 +18,7 @@ const AdminSidebar: React.FC = () => {
         <ul className='space-y-2'>
           <li>
             <Link to='/admin' className={`block p-2 hover:bg-gray-200 rounded ${!isOpen && 'text-center'}`}>
-              {isOpen ? 'Tổng quát' : <span className='text-sm'>D</span>}
+              {isOpen ? 'Thống kê' : <span className='text-sm'>D</span>}
             </Link>
           </li>
           <li>

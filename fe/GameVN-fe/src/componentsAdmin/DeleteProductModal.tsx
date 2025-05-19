@@ -10,7 +10,7 @@ interface DeleteProductModalProps {
 
 const DeleteProductModal: React.FC<DeleteProductModalProps> = ({ isOpen, onClose, onDelete, loading }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Delete Product'>
+    <Modal isOpen={isOpen} onClose={onClose} title='Xóa sản phẩm'>
       <div className='space-y-4'>
         <p>Bạn có chắc chắn muốn xóa sản phẩm này?</p>
         <div className='flex justify-end space-x-2'>

@@ -42,14 +42,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete,
                   className='bg-blue-500 text-white px-2 py-1 rounded mr-2'
                   disabled={loading}
                 >
-                  Edit
+                  Sửa
                 </button>
                 <button
                   onClick={() => onDelete(product)}
                   className='bg-red-500 text-white px-2 py-1 rounded'
                   disabled={loading}
                 >
-                  Delete
+                  Xóa
                 </button>
               </td>
             </tr>

@@ -109,7 +109,7 @@ const ProductLists: React.FC = () => {
             const details = headphone.details as HeadphoneDetails
 
             return (
-              <Link to={`/product/mouse/${headphone._id}`} key={headphone._id}>
+              <Link to={`/product/headphone/${headphone._id}`} key={headphone._id}>
                 <div className='flex-none w-60 border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow hover:cursor-pointer'>
                   <img src={headphone.image_url} alt={headphone.name} className='w-full h-32 object-contain rounded-lg mb-2' />
 
@@ -130,7 +130,7 @@ const ProductLists: React.FC = () => {
                       <span>{headphone.brand}</span>
                     </li>
                     <li className='flex'>
-                      <span className='font-medium w-16'>DPI:</span>
+                      <span className='font-medium w-16'>Mic:</span>
                       <span>{details.microphone ? 'Có Mic' : 'Không có Mic'}</span>
                     </li>
                     <li className='flex'>
@@ -184,7 +184,7 @@ const ProductLists: React.FC = () => {
                       <span>{keyboard.brand}</span>
                     </li>
                     <li className='flex'>
-                      <span className='font-medium w-16'>DPI:</span>
+                      <span className='font-medium w-16'>Switch:</span>
                       <span>{details.switch_type}</span>
                     </li>
                     <li className='flex'>

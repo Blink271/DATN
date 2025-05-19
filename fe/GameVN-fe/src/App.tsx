@@ -15,6 +15,10 @@ import AdminDiscounts from './pageAdmin/Discount'
 import AdminBanners from './pageAdmin/Banner'
 import SearchPage from './pages/Search'
 import CheckOrderPage from './pages/CheckOrder'
+import KeyBoardPage from './pages/Keyboard'
+import HeadPhonePage from './pages/Headphone'
+import DetailKsPage from './pages/DetailsK'
+import DetailHsPage from './pages/DetailsH'
 
 const App: React.FC = () => {
   return (
@@ -30,7 +34,11 @@ const App: React.FC = () => {
                 <Routes>
                   <Route path='/' element={<Home />} />
                   <Route path='/mouse' element={<Mouse />} />
+                  <Route path='/keyboard' element={<KeyBoardPage />} />
+                  <Route path='/headphone' element={<HeadPhonePage />} />
                   <Route path='/product/mouse/:id' element={<DetailsPage />} />
+                  <Route path='/product/keyboard/:id' element={<DetailKsPage />} />
+                  <Route path='/product/headphone/:id' element={<DetailHsPage />} />
                   <Route path='/cart' element={<CartPage />} />
                   <Route path='/Search' element={<SearchPage />} />
                   <Route path='/check' element={<CheckOrderPage />} />

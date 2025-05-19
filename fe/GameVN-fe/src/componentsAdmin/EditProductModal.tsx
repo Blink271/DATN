@@ -37,7 +37,7 @@ const EditProductModal: React.FC<EditProductModalProps> = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title='Edit Product'>
+    <Modal isOpen={isOpen} onClose={onClose} title='Sửa sản phẩm'>
       <div className='space-y-4'>
         <ProductForm
           formData={formData}

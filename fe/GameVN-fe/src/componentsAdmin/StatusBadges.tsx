@@ -12,9 +12,15 @@ export const OrderStatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
     canceled: 'bg-red-100 text-red-800'
   }
 
+  const statusText = {
+    pending: 'Đang giao',
+    completed: 'Hoàn thành',
+    canceled: 'Đã hủy'
+  }
+
   return (
     <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[status]}`}>
-      {status.charAt(0).toUpperCase() + status.slice(1)}
+      {statusText[status]}
     </span>
   )
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import AdminSidebar from '../../componentsAdmin/Sidebar'
@@ -7,7 +7,10 @@ import AddProductModal from '../../componentsAdmin/AddProductModal'
 import EditProductModal from '../../componentsAdmin/EditProductModal'
 import DeleteProductModal from '../../componentsAdmin/DeleteProductModal'
 import useProductManagement from '../../hook/useProductManagement'
+import { API_URL } from '../../constants'
 import { Product, ProductFormData, MouseDetails, KeyboardDetails, HeadphoneDetails } from '../../types'
+
+const ITEMS_PER_PAGE = 10 // Số sản phẩm hiển thị trên mỗi trang
 
 const AdminProducts: React.FC = () => {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -25,8 +28,28 @@ const AdminProducts: React.FC = () => {
     mouseDetails: { dpi: 0, sensor_type: '', wireless: false, rgb: false, buttons: 0 }
   })
   const [localLoading, setLocalLoading] = useState(false)
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([])
 
   const { products, loading, handleAddProduct, handleEditProduct, handleDeleteProduct } = useProductManagement()
+
+  // Lọc sản phẩm và phân trang
+  useEffect(() => {
+    const filtered = products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredProducts(filtered)
+    setCurrentPage(1) // Reset về trang đầu tiên khi tìm kiếm
+  }, [products, searchTerm])
+
+  // Tính toán sản phẩm hiển thị trên trang hiện tại
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE
+  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE)
 
   const resetForm = () => {
     setFormData({
@@ -62,7 +85,7 @@ const AdminProducts: React.FC = () => {
     setSelectedProduct(product)
     setLocalLoading(true)
     try {
-      const response = await axios.get(`http://localhost:3000/api/products/${product.category}/${product._id}`)
+      const response = await axios.get(`${API_URL}/${product.category}/${product._id}`)
       const productData = response.data as Product
 
       // Base form data
@@ -141,6 +164,8 @@ const AdminProducts: React.FC = () => {
     }
   }
 
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+
   return (
     <div className='flex flex-col h-screen'>
       <div className='flex flex-1'>
@@ -159,19 +184,65 @@ const AdminProducts: React.FC = () => {
               Thêm sản phẩm
             </button>
           </div>
+
+          {/* Ô tìm kiếm */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Tìm kiếm sản phẩm..."
+              className="w-full p-2 border border-gray-300 rounded"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
           {loading || localLoading ? (
             <div className='text-center'>Đang tải...</div>
           ) : (
-            <ProductTable
-              products={products}
-              onEdit={handleEditClick}
-              onDelete={(product) => {
-                setSelectedProduct(product)
-                setIsDeleteModalOpen(true)
-              }}
-              loading={loading || localLoading}
-            />
+            <>
+              <ProductTable
+                products={currentItems}
+                onEdit={handleEditClick}
+                onDelete={(product) => {
+                  setSelectedProduct(product)
+                  setIsDeleteModalOpen(true)
+                }}
+                loading={loading || localLoading}
+              />
+              
+              {/* Phân trang */}
+              {filteredProducts.length > ITEMS_PER_PAGE && (
+                <div className="flex justify-center mt-4">
+                  <nav className="inline-flex rounded-md shadow">
+                    <button
+                      onClick={() => paginate(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      &laquo;
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                      <button
+                        key={number}
+                        onClick={() => paginate(number)}
+                        className={`px-3 py-1 border-t border-b border-gray-300 ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      &raquo;
+                    </button>
+                  </nav>
+                </div>
+              )}
+            </>
           )}
+
           <AddProductModal
             isOpen={isAddModalOpen}
             onClose={() => setIsAddModalOpen(false)}

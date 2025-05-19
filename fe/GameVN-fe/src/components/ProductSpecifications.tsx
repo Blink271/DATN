@@ -43,7 +43,7 @@ const ProductSpecifications = ({ product }: Props) => {
         const headphoneDetails = details as HeadphoneDetails
         return [
           ...baseSpecs,
-          { name: 'Kích thước driver', value: headphoneDetails.driver_size },
+          { name: 'Kiểu', value: headphoneDetails.driver_size },
           { name: 'Tần số đáp ứng', value: headphoneDetails.frequency_response },
           { name: 'Kết nối', value: headphoneDetails.wireless ? 'Không dây' : 'Có dây' },
           { name: 'Microphone', value: headphoneDetails.microphone ? 'Có' : 'Không' },

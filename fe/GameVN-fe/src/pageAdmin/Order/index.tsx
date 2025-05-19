@@ -278,22 +278,24 @@ const AdminOrders: React.FC = () => {
                           >
                             Chi tiết
                           </button>
-                          <button
-                            onClick={() => {
-                              setSelectedOrder(order)
-                              setIsEditModalOpen(true)
-                            }}
-                            className='text-indigo-600 hover:text-indigo-900'
-                          >
-                            Cập nhật trạng thái
-                          </button>
-                          {order.status !== 'canceled' && (
-                            <button
-                              onClick={() => handleCancelOrder(order._id)}
-                              className='text-red-600 hover:text-red-900'
-                            >
-                              Hủy
-                            </button>
+                          {order.status !== 'completed' && order.status !== 'canceled' && (
+                            <>
+                              <button
+                                onClick={() => {
+                                  setSelectedOrder(order)
+                                  setIsEditModalOpen(true)
+                                }}
+                                className='text-indigo-600 hover:text-indigo-900'
+                              >
+                                Cập nhật trạng thái
+                              </button>
+                              <button
+                                onClick={() => handleCancelOrder(order._id)}
+                                className='text-red-600 hover:text-red-900'
+                              >
+                                Hủy
+                              </button>
+                            </>
                           )}
                         </td>
                       </tr>
@@ -311,7 +313,7 @@ const AdminOrders: React.FC = () => {
                       disabled={currentPage === 1}
                       className='px-3 py-1 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50'
                     >
-                      Previous
+                      Trang trước
                     </button>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                       <button
@@ -331,7 +333,7 @@ const AdminOrders: React.FC = () => {
                       disabled={currentPage === totalPages}
                       className='px-3 py-1 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50'
                     >
-                      Next
+                      Trang sau
                     </button>
                   </nav>
                 </div>
@@ -343,12 +345,12 @@ const AdminOrders: React.FC = () => {
           <Modal
             isOpen={isEditModalOpen}
             onClose={() => setIsEditModalOpen(false)}
-            title={`Update Order #${selectedOrder?._id.substring(0, 8)}`}
+            title={`Cập nhật trạng thái đơn hàng #${selectedOrder?._id.substring(0, 8)}`}
           >
             {selectedOrder && (
               <div className='space-y-4'>
                 <div>
-                  <label className='block text-sm font-medium text-gray-700 mb-1'>Status</label>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>Trạng thái</label>
                   <select
                     value={selectedOrder.status}
                     onChange={(e) =>
@@ -359,9 +361,9 @@ const AdminOrders: React.FC = () => {
                     }
                     className='w-full p-2 border rounded'
                   >
-                    <option value='pending'>Pending</option>
-                    <option value='completed'>Completed</option>
-                    <option value='canceled'>Canceled</option>
+                    <option value='pending'>Đang giao</option>
+                    <option value='completed'>Hoàn thành</option>
+                    <option value='canceled'>Đã hủy</option>
                   </select>
                 </div>
 
@@ -372,13 +374,13 @@ const AdminOrders: React.FC = () => {
                     onClick={() => setIsEditModalOpen(false)}
                     className='px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50'
                   >
-                    Cancel
+                    Hủy
                   </button>
                   <button
                     onClick={handleEditOrder}
                     className='px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700'
                   >
-                    Save Changes
+                    Lưu
                   </button>
                 </div>
               </div>

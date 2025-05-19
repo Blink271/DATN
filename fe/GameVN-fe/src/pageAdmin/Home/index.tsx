@@ -146,7 +146,7 @@ const AdminDashboard: React.FC = () => {
     <div className='flex min-h-screen bg-gray-100'>
       <AdminSidebar />
       <main className='flex-1 p-6 overflow-auto'>
-        <h2 className='text-3xl font-bold text-gray-800 mb-6'>Trang Quản Lý</h2>
+        <h2 className='text-3xl font-bold text-gray-800 mb-6'>Trang thống kê</h2>
 
         {loading ? (
           <div className='flex justify-center items-center h-64'>

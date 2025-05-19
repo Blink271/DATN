@@ -12,7 +12,7 @@ const UserMenu: FC<UserMenuProps> = ({ userName, userRole, onLogout }) => {
 
   const menuItems = [
     { icon: FaCog, text: 'Quản lý thông tin', link: '/profile' },
-    { icon: FaBox, text: 'Xem đơn hàng', link: '/orders' },
+    { icon: FaBox, text: 'Xem đơn hàng', link: '/check' },
     ...(userRole === 'admin' ? [{ icon: FaCog, text: 'Trang admin', link: '/admin' }] : []),
     { icon: FaSignOutAlt, text: 'Đăng xuất', link: '#', onClick: onLogout }
   ]

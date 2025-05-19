@@ -14,6 +14,8 @@ interface User {
   created_at: string
 }
 
+const ITEMS_PER_PAGE = 10 // Số người dùng hiển thị trên mỗi trang
+
 const AdminUsers: React.FC = () => {
   const [users, setUsers] = useState<User[]>([])
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
@@ -30,10 +32,31 @@ const AdminUsers: React.FC = () => {
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([])
 
   useEffect(() => {
     fetchUsers()
   }, [])
+
+  // Lọc người dùng và phân trang
+  useEffect(() => {
+    const filtered = users.filter(user =>
+      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      user.address.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    setFilteredUsers(filtered)
+    setCurrentPage(1) // Reset về trang đầu tiên khi tìm kiếm
+  }, [users, searchTerm])
+
+  // Tính toán người dùng hiển thị trên trang hiện tại
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE
+  const currentItems = filteredUsers.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(filteredUsers.length / ITEMS_PER_PAGE)
 
   const fetchUsers = async () => {
     setLoading(true)
@@ -101,6 +124,8 @@ const AdminUsers: React.FC = () => {
     }
   }
 
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber)
+
   return (
     <div className='flex flex-col h-screen'>
       <div className='flex flex-1'>
@@ -112,55 +137,100 @@ const AdminUsers: React.FC = () => {
               Thêm người dùng
             </button>
           </div>
+
+          {/* Ô tìm kiếm */}
+          <div className="mb-4">
+            <input
+              type="text"
+              placeholder="Tìm kiếm người dùng..."
+              className="w-full p-2 border border-gray-300 rounded"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+
           {error && <div className='mb-4 text-red-500'>{error}</div>}
           {loading ? (
             <div>Đang tải...</div>
           ) : (
-            <div className='bg-white rounded shadow overflow-x-auto'>
-              <table className='min-w-full'>
-                <thead>
-                  <tr className='bg-gray-100'>
-                    <th className='p-3 text-left'>Tên</th>
-                    <th className='p-3 text-left'>Email</th>
-                    <th className='p-3 text-left'>SĐT</th>
-                    <th className='p-3 text-left'>Địa chỉ</th>
-                    <th className='p-3 text-left'>Vai trò</th>
-                    <th className='p-3 text-left'></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map((user) => (
-                    <tr key={user._id} className='border-b'>
-                      <td className='p-3'>{user.name}</td>
-                      <td className='p-3'>{user.email}</td>
-                      <td className='p-3'>{user.phone}</td>
-                      <td className='p-3'>{user.address || 'N/A'}</td>
-                      <td className='p-3'>{user.role}</td>
-                      <td className='p-3'>
-                        <button
-                          onClick={() => {
-                            setSelectedUser(user)
-                            setIsEditModalOpen(true)
-                          }}
-                          className='bg-blue-500 text-white px-2 py-1 rounded mr-2'
-                        >
-                          Sửa
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedUser(user)
-                            setIsDeleteModalOpen(true)
-                          }}
-                          className='bg-red-500 text-white px-2 py-1 rounded'
-                        >
-                          Xóa
-                        </button>
-                      </td>
+            <>
+              <div className='bg-white rounded shadow overflow-x-auto'>
+                <table className='min-w-full'>
+                  <thead>
+                    <tr className='bg-gray-100'>
+                      <th className='p-3 text-left'>Tên</th>
+                      <th className='p-3 text-left'>Email</th>
+                      <th className='p-3 text-left'>SĐT</th>
+                      <th className='p-3 text-left'>Địa chỉ</th>
+                      <th className='p-3 text-left'>Vai trò</th>
+                      <th className='p-3 text-left'></th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {currentItems.map((user) => (
+                      <tr key={user._id} className='border-b'>
+                        <td className='p-3'>{user.name}</td>
+                        <td className='p-3'>{user.email}</td>
+                        <td className='p-3'>{user.phone}</td>
+                        <td className='p-3'>{user.address || 'N/A'}</td>
+                        <td className='p-3'>{user.role === 'admin' ? 'Admin' : 'Người dùng'}</td>
+                        <td className='p-3'>
+                          <button
+                            onClick={() => {
+                              setSelectedUser(user)
+                              setIsEditModalOpen(true)
+                            }}
+                            className='bg-blue-500 text-white px-2 py-1 rounded mr-2'
+                          >
+                            Sửa
+                          </button>
+                          <button
+                            onClick={() => {
+                              setSelectedUser(user)
+                              setIsDeleteModalOpen(true)
+                            }}
+                            className='bg-red-500 text-white px-2 py-1 rounded'
+                          >
+                            Xóa
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Phân trang */}
+              {filteredUsers.length > ITEMS_PER_PAGE && (
+                <div className="flex justify-center mt-4">
+                  <nav className="inline-flex rounded-md shadow">
+                    <button
+                      onClick={() => paginate(Math.max(1, currentPage - 1))}
+                      disabled={currentPage === 1}
+                      className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      &laquo;
+                    </button>
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                      <button
+                        key={number}
+                        onClick={() => paginate(number)}
+                        className={`px-3 py-1 border-t border-b border-gray-300 ${currentPage === number ? 'bg-blue-500 text-white' : 'bg-white text-gray-500 hover:bg-gray-50'}`}
+                      >
+                        {number}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
+                      disabled={currentPage === totalPages}
+                      className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    >
+                      &raquo;
+                    </button>
+                  </nav>
+                </div>
+              )}
+            </>
           )}
 
           {/* Add User Modal */}
