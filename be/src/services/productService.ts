@@ -2,6 +2,8 @@ import { Product } from '../models/Product';
 import { MouseDetails } from '../models/MouseDetails';
 import { KeyboardDetails } from '../models/KeyboardDetails';
 import { HeadphoneDetails } from '../models/HeadphoneDetails';
+import { HandheldDetails } from '../models/handheldDetails';
+import { PadDetails } from '../models/PadDetails';
 
 export class ProductService {
 
@@ -16,6 +18,10 @@ export class ProductService {
           details = await KeyboardDetails.findOne({ product_id: product._id });
         } else if (product.category === 'headphone') {
           details = await HeadphoneDetails.findOne({ product_id: product._id });
+        }else if (product.category === 'handheld') {
+          details = await HandheldDetails.findOne({ product_id: product._id });
+        } else if (product.category === 'pad') {
+          details = await PadDetails.findOne({ product_id: product._id });
         }
         return { ...product.toJSON(), details };
       })
@@ -25,7 +31,7 @@ export class ProductService {
   }
 
   async getProductsByCategory(category: string) {
-    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+    if (!['mouse', 'keyboard', 'headphone', 'handheld', 'pad'].includes(category)) {
       throw new Error('Invalid category');
     }
 
@@ -39,6 +45,10 @@ export class ProductService {
           details = await KeyboardDetails.findOne({ product_id: product._id });
         } else if (category === 'headphone') {
           details = await HeadphoneDetails.findOne({ product_id: product._id });
+        }else if (category === 'handheld') {
+          details = await HandheldDetails.findOne({ product_id: product._id });
+        } else if (category === 'pad') {
+          details = await PadDetails.findOne({ product_id: product._id });
         }
         return { ...product.toJSON(), details };
       })
@@ -48,7 +58,7 @@ export class ProductService {
   }
 
   async createProduct(category: string, data: any) {
-    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+    if (!['mouse', 'keyboard', 'headphone', 'handheld', 'pad'].includes(category)) {
       throw new Error('Invalid category');
     }
 
@@ -86,8 +96,19 @@ export class ProductService {
         ...details,
       });
       await headphoneDetails.save();
+    } else if (category === 'handheld') {
+      const handheldDetails = new HandheldDetails({
+        product_id: product._id,
+        ...details,
+      });
+      await handheldDetails.save();
+    } else if (category === 'pad') {
+      const padDetails = new PadDetails({
+        product_id: product._id,
+        ...details,
+      });
+      await padDetails.save();
     }
-
     return product;
   }
 
@@ -106,6 +127,10 @@ export class ProductService {
         details = await KeyboardDetails.findOne({ product_id: product._id });
       } else if (product.category === 'headphone') {
         details = await HeadphoneDetails.findOne({ product_id: product._id });
+      } else if (product.category === 'handheld') {
+        details = await HandheldDetails.findOne({ product_id: product._id });
+      } else if (product.category === 'pad') {
+        details = await PadDetails.findOne({ product_id: product._id });
       }
       return { ...product.toJSON(), details };
     })
@@ -115,7 +140,7 @@ export class ProductService {
 }
 
   async getProductsByID(id: string, category: string) {
-    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+    if (!['mouse', 'keyboard', 'headphone', 'handheld', 'pad'].includes(category)) {
       throw new Error('Invalid category');
     }
 
@@ -134,13 +159,17 @@ export class ProductService {
       details = await KeyboardDetails.findOne({ product_id: id });
     } else if (category === 'headphone') {
       details = await HeadphoneDetails.findOne({ product_id: id });
+    } else if (category === 'handheld') {
+      details = await HandheldDetails.findOne({ product_id: id });
+    } else if (category === 'pad') {
+      details = await PadDetails.findOne({ product_id: id });
     }
 
     return { ...product.toJSON(), details };
 }
 
   async updateProduct(id: string, category: string, data: any) {
-    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+    if (!['mouse', 'keyboard', 'headphone', 'handheld', 'pad'].includes(category)) {
       throw new Error('Invalid category');
     }
 
@@ -169,13 +198,17 @@ export class ProductService {
       await KeyboardDetails.updateOne({ product_id: id }, details);
     } else if (category === 'headphone') {
       await HeadphoneDetails.updateOne({ product_id: id }, details);
+    } else if (category === 'handheld') {
+      await HandheldDetails.updateOne({ product_id: id }, details);
+    } else if (category === 'pad') {
+      await PadDetails.updateOne({ product_id: id }, details);
     }
 
     return product;
   }
 
   async deleteProduct(id: string, category: string) {
-    if (!['mouse', 'keyboard', 'headphone'].includes(category)) {
+    if (!['mouse', 'keyboard', 'headphone', 'handheld', 'pad'].includes(category)) {
       throw new Error('Invalid category');
     }
 
@@ -194,6 +227,10 @@ export class ProductService {
       await KeyboardDetails.deleteOne({ product_id: id });
     } else if (category === 'headphone') {
       await HeadphoneDetails.deleteOne({ product_id: id });
+    } else if (category === 'handheld') {
+      await HandheldDetails.deleteOne({ product_id: id });
+    } else if (category === 'pad') {
+      await PadDetails.deleteOne({ product_id: id });
     }
 
     return true;

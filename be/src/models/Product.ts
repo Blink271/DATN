@@ -9,7 +9,7 @@ export interface IProduct extends Document {
   price: number;
   stock: number;
   image_url: string;
-  category: 'mouse' | 'keyboard' | 'headphone';
+  category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad';
   sold_count: number;
   discount_id?: string;
   created_at: Date;
@@ -23,7 +23,7 @@ const productSchema = new Schema<IProduct>({
   price: { type: Number, required: true },
   stock: { type: Number, required: true },
   image_url: { type: String, required: true },
-  category: { type: String, enum: ['mouse', 'keyboard', 'headphone'], required: true },
+  category: { type: String, enum: ['mouse', 'keyboard', 'headphone', 'handheld', 'pad'], required: true },
   sold_count: { type: Number, default: 0 },
   discount_id: { type: String },
   created_at: { type: Date, default: Date.now },
