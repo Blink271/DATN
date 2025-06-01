@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { FaKeyboard, FaMouse, FaHeadphones } from 'react-icons/fa'
+import { FaKeyboard, FaMouse, FaHeadphones, FaGamepad } from 'react-icons/fa'
 
 const categories = [
   { icon: FaKeyboard, name: 'Bàn phím', cat: 'keyboard' },
   { icon: FaMouse, name: 'Chuột', cat: 'mouse' },
   { icon: FaHeadphones, name: 'Tai nghe', cat: 'headphone' },
-  { icon: FaMouse, name: 'Tay cầm chơi game', cat: 'handheld' },
+  { icon: FaGamepad, name: 'Tay cầm chơi game', cat: 'handheld' },
   { icon: FaMouse, name: 'Pad chuột', cat: 'pad' }
 ]
 
