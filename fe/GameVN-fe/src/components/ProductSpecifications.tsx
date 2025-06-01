@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Product, MouseDetails, KeyboardDetails, HeadphoneDetails } from '../types'
+import { Product, MouseDetails, KeyboardDetails, HeadphoneDetails, HandheldDetails, PadDetails } from '../types'
 
 interface Props {
   product: Product
@@ -7,7 +7,7 @@ interface Props {
 
 const ProductSpecifications = ({ product }: Props) => {
   const [showFullSpecs, setShowFullSpecs] = useState(false)
-  const details = product.details as MouseDetails | KeyboardDetails | HeadphoneDetails
+  const details = product.details as MouseDetails | KeyboardDetails | HeadphoneDetails | HandheldDetails | PadDetails
 
   const getSpecifications = () => {
     const baseSpecs = [
@@ -48,6 +48,24 @@ const ProductSpecifications = ({ product }: Props) => {
           { name: 'Kết nối', value: headphoneDetails.wireless ? 'Không dây' : 'Có dây' },
           { name: 'Microphone', value: headphoneDetails.microphone ? 'Có' : 'Không' },
           { name: 'Âm thanh vòm', value: headphoneDetails.surround_sound ? 'Có' : 'Không' }
+        ]
+      }
+      case 'handheld': {
+        const handheldDetails = details as HandheldDetails
+        return [
+          ...baseSpecs,
+          { name: 'Dung lượng pin', value: `${handheldDetails.pin} mAh` },
+          { name: 'Kết nối', value: handheldDetails.wireless ? 'Không dây' : 'Có dây' },
+          { name: 'Đèn LED', value: handheldDetails.rgb ? 'Có RGB' : 'Không RGB' },
+          { name: 'Số nút bấm', value: handheldDetails.buttons }
+        ]
+      }
+      case 'pad': {
+        const padDetails = details as PadDetails
+        return [
+          ...baseSpecs,
+          { name: 'Kích thước', value: `${padDetails.width} x ${padDetails.height} x ${padDetails.thick} mm` },
+          { name: 'Loại pad', value: padDetails.type }
         ]
       }
       default:

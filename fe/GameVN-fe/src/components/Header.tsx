@@ -83,10 +83,7 @@ const Header: FC = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button 
-            type='submit'
-            className='bg-black px-4 py-2 rounded-r-md hover:bg-gray-800 transition-colors'
-          >
+          <button type='submit' className='bg-black px-4 py-2 rounded-r-md hover:bg-gray-800 transition-colors'>
             <FaSearch />
           </button>
         </form>

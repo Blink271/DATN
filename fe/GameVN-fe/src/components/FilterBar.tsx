@@ -1,7 +1,6 @@
 import React from 'react'
 
 const FilterBar: React.FC = () => {
-
   return (
     <div className='flex items-center justify-between mb-6'>
       <div>

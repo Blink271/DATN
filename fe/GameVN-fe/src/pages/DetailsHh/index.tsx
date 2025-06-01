@@ -6,7 +6,7 @@ import { Product } from '../../types'
 import ProductSpecifications from '../../components/ProductSpecifications'
 import RelatedProducts from '../../components/SameProduct'
 
-const DetailKsPage: React.FC = () => {
+const DetailHhsPage: React.FC = () => {
   const { category, id } = useParams<{
     category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad'
     id: string
@@ -21,7 +21,7 @@ const DetailKsPage: React.FC = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true)
-        const response = await axios.get<Product>(`${API_URL}/keyboard/${id}`)
+        const response = await axios.get<Product>(`${API_URL}/handheld/${id}`)
         setProduct(response.data)
       } catch (err) {
         setError('Không thể tải thông tin sản phẩm')
@@ -222,4 +222,4 @@ const DetailKsPage: React.FC = () => {
   )
 }
 
-export default DetailKsPage
+export default DetailHhsPage

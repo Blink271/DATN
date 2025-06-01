@@ -4,9 +4,13 @@ import axios from 'axios'
 import { API_URL } from '../../constants'
 import { Product } from '../../types'
 import ProductSpecifications from '../../components/ProductSpecifications'
+import RelatedProducts from '../../components/SameProduct'
 
 const DetailsPage: React.FC = () => {
-  const { category, id } = useParams<{ category: 'mouse' | 'keyboard' | 'headphone'; id: string }>()
+  const { category, id } = useParams<{
+    category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad'
+    id: string
+  }>()
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -208,6 +212,11 @@ const DetailsPage: React.FC = () => {
           {product.description || 'Sản phẩm chất lượng cao với thiết kế hiện đại, phù hợp cho nhu cầu sử dụng đa dạng.'}
         </div>
       </div>
+      <RelatedProducts
+        currentProductBrand={product.brand}
+        currentProductId={product._id}
+        category={product.category} // 'mouse', 'headphone', 'keyboard', etc.
+      />
     </div>
   )
 }

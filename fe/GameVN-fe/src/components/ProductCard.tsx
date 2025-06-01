@@ -7,7 +7,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className='product-card'>
-      <img src={product.image} alt={product.name} />
+      <img src={product.image_url} alt={product.name} />
       <h3>{product.name}</h3>
       <p>{product.price.toLocaleString()} VNĐ</p>
       <button>Thêm vào giỏ</button>

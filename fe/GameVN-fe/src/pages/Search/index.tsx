@@ -9,7 +9,7 @@ const SearchPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   const [visibleCount, setVisibleCount] = useState(12)
-  
+
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const searchTerm = queryParams.get('q') || ''
@@ -63,16 +63,14 @@ const SearchPage: React.FC = () => {
   return (
     <div className='container mx-auto p-4'>
       <h1 className='text-2xl font-bold mb-6'>Kết quả tìm kiếm cho "{searchTerm}"</h1>
-      
+
       <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6'>
         {products.slice(0, visibleCount).map((product) => (
           <Link to={`/product/${product.category}/${product._id}`} key={product._id}>
             <div className='border rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow hover:cursor-pointer h-full flex flex-col'>
               <img src={product.image_url} alt={product.name} className='w-full h-40 object-cover rounded-lg mb-2' />
               {product.sold_count > 50 && (
-                <span className='bg-red-500 text-white text-xs px-2 py-1 rounded-full w-[90px] mb-2'>
-                  🔥 Bán chạy
-                </span>
+                <span className='bg-red-500 text-white text-xs px-2 py-1 rounded-full w-[90px] mb-2'>🔥 Bán chạy</span>
               )}
               <h3 className='text-sm font-bold mb-1 line-clamp-2'>{product.name}</h3>
               <p className='text-xs text-gray-500 mb-2'>{product.brand}</p>
@@ -106,7 +104,7 @@ const SearchPage: React.FC = () => {
           </Link>
         ))}
       </div>
-      
+
       {visibleCount < products.length && (
         <div className='flex justify-center mt-6'>
           <button

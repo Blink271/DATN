@@ -19,8 +19,6 @@ export const OrderStatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
   }
 
   return (
-    <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[status]}`}>
-      {statusText[status]}
-    </span>
+    <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusClasses[status]}`}>{statusText[status]}</span>
   )
 }

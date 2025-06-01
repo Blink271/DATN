@@ -5,7 +5,7 @@ import { ProductFormData } from '../types'
 interface ProductFormProps {
   formData: ProductFormData
   setFormData: (data: ProductFormData) => void
-  handleCategoryChange: (category: 'mouse' | 'keyboard' | 'headphone') => void
+  handleCategoryChange: (category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad') => void
   loading: boolean
 }
 
@@ -75,13 +75,17 @@ const ProductForm: React.FC<ProductFormProps> = ({ formData, setFormData, handle
         <label className='block text-sm font-medium text-gray-700 mb-1'>Danh mục</label>
         <select
           value={formData.category}
-          onChange={(e) => handleCategoryChange(e.target.value as 'mouse' | 'keyboard' | 'headphone')}
+          onChange={(e) =>
+            handleCategoryChange(e.target.value as 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad')
+          }
           className='w-full p-2 border rounded'
           disabled={loading}
         >
           <option value='mouse'>Chuột</option>
           <option value='keyboard'>Bàn phím</option>
           <option value='headphone'>Tai nghe</option>
+          <option value='handheld'>Tay cầm chơi game</option>
+          <option value='pad'>Lót chuột</option>
         </select>
       </div>
       <CategoryFields category={formData.category} formData={formData} setFormData={setFormData} />

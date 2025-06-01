@@ -42,11 +42,12 @@ const AdminUsers: React.FC = () => {
 
   // Lọc người dùng và phân trang
   useEffect(() => {
-    const filtered = users.filter(user =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.address.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = users.filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.phone.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.address.toLowerCase().includes(searchTerm.toLowerCase())
     )
     setFilteredUsers(filtered)
     setCurrentPage(1) // Reset về trang đầu tiên khi tìm kiếm
@@ -139,11 +140,11 @@ const AdminUsers: React.FC = () => {
           </div>
 
           {/* Ô tìm kiếm */}
-          <div className="mb-4">
+          <div className='mb-4'>
             <input
-              type="text"
-              placeholder="Tìm kiếm người dùng..."
-              className="w-full p-2 border border-gray-300 rounded"
+              type='text'
+              placeholder='Tìm kiếm người dùng...'
+              className='w-full p-2 border border-gray-300 rounded'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -202,16 +203,16 @@ const AdminUsers: React.FC = () => {
 
               {/* Phân trang */}
               {filteredUsers.length > ITEMS_PER_PAGE && (
-                <div className="flex justify-center mt-4">
-                  <nav className="inline-flex rounded-md shadow">
+                <div className='flex justify-center mt-4'>
+                  <nav className='inline-flex rounded-md shadow'>
                     <button
                       onClick={() => paginate(Math.max(1, currentPage - 1))}
                       disabled={currentPage === 1}
-                      className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                      className='px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50'
                     >
                       &laquo;
                     </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                       <button
                         key={number}
                         onClick={() => paginate(number)}
@@ -223,7 +224,7 @@ const AdminUsers: React.FC = () => {
                     <button
                       onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                      className='px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50'
                     >
                       &raquo;
                     </button>

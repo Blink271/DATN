@@ -11,14 +11,16 @@ import AdminDashboard from './pageAdmin/Home'
 import AdminUsers from './pageAdmin/User'
 import AdminProducts from './pageAdmin/Product'
 import AdminOrders from './pageAdmin/Order'
-import AdminDiscounts from './pageAdmin/Discount'
-import AdminBanners from './pageAdmin/Banner'
 import SearchPage from './pages/Search'
 import CheckOrderPage from './pages/CheckOrder'
 import KeyBoardPage from './pages/Keyboard'
 import HeadPhonePage from './pages/Headphone'
 import DetailKsPage from './pages/DetailsK'
 import DetailHsPage from './pages/DetailsH'
+import HandHeldPage from './pages/Handheld'
+import PadPage from './pages/Pad'
+import DetailHhsPage from './pages/DetailsHh'
+import DetailPsPage from './pages/DetailsP'
 
 const App: React.FC = () => {
   return (
@@ -36,9 +38,13 @@ const App: React.FC = () => {
                   <Route path='/mouse' element={<Mouse />} />
                   <Route path='/keyboard' element={<KeyBoardPage />} />
                   <Route path='/headphone' element={<HeadPhonePage />} />
+                  <Route path='/handheld' element={<HandHeldPage />} />
+                  <Route path='/pad' element={<PadPage />} />
                   <Route path='/product/mouse/:id' element={<DetailsPage />} />
                   <Route path='/product/keyboard/:id' element={<DetailKsPage />} />
                   <Route path='/product/headphone/:id' element={<DetailHsPage />} />
+                  <Route path='/product/handheld/:id' element={<DetailHhsPage />} />
+                  <Route path='/product/pad/:id' element={<DetailPsPage />} />
                   <Route path='/cart' element={<CartPage />} />
                   <Route path='/Search' element={<SearchPage />} />
                   <Route path='/check' element={<CheckOrderPage />} />
@@ -60,9 +66,6 @@ const App: React.FC = () => {
                   <Route path='/users' element={<AdminUsers />} />
                   <Route path='/products' element={<AdminProducts />} />
                   <Route path='/orders' element={<AdminOrders />} />
-                  <Route path='/discounts' element={<AdminDiscounts />} />
-                  <Route path='/banners' element={<AdminBanners />} />
-                  
                 </Routes>
               </main>
             </div>

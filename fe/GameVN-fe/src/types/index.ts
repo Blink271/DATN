@@ -6,10 +6,10 @@ interface Product {
   price: number
   stock: number
   image_url: string
-  category: 'mouse' | 'keyboard' | 'headphone'
+  category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad'
   sold_count: number
   created_at: string
-  details: MouseDetails | KeyboardDetails | HeadphoneDetails
+  details: MouseDetails | KeyboardDetails | HeadphoneDetails | HandheldDetails | PadDetails
 }
 
 interface MouseDetails {
@@ -36,6 +36,19 @@ interface HeadphoneDetails {
   surround_sound: boolean
 }
 
+interface HandheldDetails {
+  pin: number
+  wireless: boolean
+  rgb: boolean
+  buttons: number
+}
+interface PadDetails {
+  width: number
+  height: number
+  thick: number
+  type: string
+}
+
 interface ProductFormData {
   name: string
   brand: string
@@ -43,10 +56,12 @@ interface ProductFormData {
   price: number
   stock: number
   image_url: string
-  category: 'mouse' | 'keyboard' | 'headphone'
+  category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad'
   mouseDetails?: MouseDetails
   keyboardDetails?: KeyboardDetails
   headphoneDetails?: HeadphoneDetails
+  handheldDetails?: HandheldDetails
+  padDetails?: PadDetails
 }
 
-export type { Product, MouseDetails, KeyboardDetails, HeadphoneDetails, ProductFormData }
+export type { Product, MouseDetails, KeyboardDetails, HeadphoneDetails, ProductFormData, HandheldDetails, PadDetails }

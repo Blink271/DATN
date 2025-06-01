@@ -8,7 +8,15 @@ import EditProductModal from '../../componentsAdmin/EditProductModal'
 import DeleteProductModal from '../../componentsAdmin/DeleteProductModal'
 import useProductManagement from '../../hook/useProductManagement'
 import { API_URL } from '../../constants'
-import { Product, ProductFormData, MouseDetails, KeyboardDetails, HeadphoneDetails } from '../../types'
+import {
+  Product,
+  ProductFormData,
+  MouseDetails,
+  KeyboardDetails,
+  HeadphoneDetails,
+  HandheldDetails,
+  PadDetails
+} from '../../types'
 
 const ITEMS_PER_PAGE = 10 // Số sản phẩm hiển thị trên mỗi trang
 
@@ -36,10 +44,11 @@ const AdminProducts: React.FC = () => {
 
   // Lọc sản phẩm và phân trang
   useEffect(() => {
-    const filtered = products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const filtered = products.filter(
+      (product) =>
+        product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase())
     )
     setFilteredProducts(filtered)
     setCurrentPage(1) // Reset về trang đầu tiên khi tìm kiếm
@@ -64,7 +73,7 @@ const AdminProducts: React.FC = () => {
     })
   }
 
-  const handleCategoryChange = (category: 'mouse' | 'keyboard' | 'headphone') => {
+  const handleCategoryChange = (category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad') => {
     setFormData({
       ...formData,
       category,
@@ -77,7 +86,9 @@ const AdminProducts: React.FC = () => {
       headphoneDetails:
         category === 'headphone'
           ? { driver_size: '', frequency_response: '', wireless: false, microphone: false, surround_sound: false }
-          : undefined
+          : undefined,
+      handheldDetails: category === 'handheld' ? { pin: 0, wireless: false, rgb: false, buttons: 0 } : undefined,
+      padDetails: category === 'pad' ? { width: 0, height: 0, thick: 0, type: '' } : undefined
     })
   }
 
@@ -150,6 +161,39 @@ const AdminProducts: React.FC = () => {
           }
           break
         }
+        case 'handheld': {
+          const handheldDetails = productData.details as HandheldDetails
+          formData = {
+            ...baseFormData,
+            handheldDetails: {
+              pin: handheldDetails.pin,
+              wireless: handheldDetails.wireless,
+              rgb: handheldDetails.rgb,
+              buttons: handheldDetails.buttons
+            },
+            mouseDetails: undefined,
+            keyboardDetails: undefined,
+            headphoneDetails: undefined
+          }
+          break
+        }
+        case 'pad': {
+          const padDetails = productData.details as PadDetails
+          formData = {
+            ...baseFormData,
+            padDetails: {
+              width: padDetails.width,
+              height: padDetails.height,
+              thick: padDetails.thick,
+              type: padDetails.type
+            },
+            mouseDetails: undefined,
+            keyboardDetails: undefined,
+            headphoneDetails: undefined,
+            handheldDetails: undefined
+          }
+          break
+        }
         default:
           throw new Error('Invalid product category')
       }
@@ -186,11 +230,11 @@ const AdminProducts: React.FC = () => {
           </div>
 
           {/* Ô tìm kiếm */}
-          <div className="mb-4">
+          <div className='mb-4'>
             <input
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              className="w-full p-2 border border-gray-300 rounded"
+              type='text'
+              placeholder='Tìm kiếm sản phẩm...'
+              className='w-full p-2 border border-gray-300 rounded'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -209,19 +253,19 @@ const AdminProducts: React.FC = () => {
                 }}
                 loading={loading || localLoading}
               />
-              
+
               {/* Phân trang */}
               {filteredProducts.length > ITEMS_PER_PAGE && (
-                <div className="flex justify-center mt-4">
-                  <nav className="inline-flex rounded-md shadow">
+                <div className='flex justify-center mt-4'>
+                  <nav className='inline-flex rounded-md shadow'>
                     <button
                       onClick={() => paginate(Math.max(1, currentPage - 1))}
                       disabled={currentPage === 1}
-                      className="px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                      className='px-3 py-1 rounded-l-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50'
                     >
                       &laquo;
                     </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
                       <button
                         key={number}
                         onClick={() => paginate(number)}
@@ -233,7 +277,7 @@ const AdminProducts: React.FC = () => {
                     <button
                       onClick={() => paginate(Math.min(totalPages, currentPage + 1))}
                       disabled={currentPage === totalPages}
-                      className="px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                      className='px-3 py-1 rounded-r-md border border-gray-300 bg-white text-gray-500 hover:bg-gray-50 disabled:opacity-50'
                     >
                       &raquo;
                     </button>

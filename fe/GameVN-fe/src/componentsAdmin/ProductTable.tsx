@@ -30,12 +30,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ products, onEdit, onDelete,
               <td className='p-3'>{product.price}đ</td>
               <td className='p-3'>{product.stock}</td>
               <td className='p-3'>
-  {{
-    mouse: 'Chuột',
-    keyboard: 'Bàn phím',
-    headphone: 'Tai nghe'
-  }[product.category] || product.category}
-</td>
+                {{
+                  mouse: 'Chuột',
+                  keyboard: 'Bàn phím',
+                  headphone: 'Tai nghe',
+                  handheld: 'Tay cầm chơi game',
+                  pad: 'Lót chuột'
+                }[product.category] || product.category}
+              </td>
               <td className='p-3'>
                 <button
                   onClick={() => onEdit(product)}

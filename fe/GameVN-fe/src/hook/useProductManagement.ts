@@ -1,7 +1,15 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
-import { Product, ProductFormData, MouseDetails, HeadphoneDetails, KeyboardDetails } from '../types'
+import {
+  Product,
+  ProductFormData,
+  MouseDetails,
+  HeadphoneDetails,
+  KeyboardDetails,
+  HandheldDetails,
+  PadDetails
+} from '../types'
 
 const API_URL = 'http://localhost:3000/api/products'
 
@@ -49,6 +57,14 @@ const useProductManagement = () => {
       toast.error('Please fill in all headphone details')
       return false
     }
+    if (formData.category === 'handheld' && (!formData.handheldDetails?.pin || !formData.handheldDetails?.buttons)) {
+      toast.error('Please fill in all handheld details')
+      return false
+    }
+    if (formData.category === 'pad' && (!formData.padDetails?.width || !formData.padDetails?.height)) {
+      toast.error('Please fill in all pad details')
+      return false
+    }
     return true
   }
 
@@ -62,6 +78,8 @@ const useProductManagement = () => {
         mouseDetails?: MouseDetails
         keyboardDetails?: KeyboardDetails
         headphoneDetails?: HeadphoneDetails
+        handheldDetails?: HandheldDetails
+        padDetails?: PadDetails
       } = {
         name: formData.name,
         brand: formData.brand,
@@ -86,6 +104,16 @@ const useProductManagement = () => {
         case 'headphone':
           if (formData.headphoneDetails) {
             payload.details = formData.headphoneDetails
+          }
+          break
+        case 'handheld':
+          if (formData.handheldDetails) {
+            payload.details = formData.handheldDetails
+          }
+          break
+        case 'pad':
+          if (formData.padDetails) {
+            payload.details = formData.padDetails
           }
           break
         default:
@@ -116,6 +144,8 @@ const useProductManagement = () => {
         mouseDetails?: MouseDetails
         keyboardDetails?: KeyboardDetails
         headphoneDetails?: HeadphoneDetails
+        handheldDetails?: HandheldDetails
+        padDetails?: PadDetails
       } = {
         name: formData.name,
         brand: formData.brand,
@@ -140,6 +170,16 @@ const useProductManagement = () => {
         case 'headphone':
           if (formData.headphoneDetails) {
             payload.details = formData.headphoneDetails
+          }
+          break
+        case 'handheld':
+          if (formData.handheldDetails) {
+            payload.details = formData.handheldDetails
+          }
+          break
+        case 'pad':
+          if (formData.padDetails) {
+            payload.details = formData.padDetails
           }
           break
         default:

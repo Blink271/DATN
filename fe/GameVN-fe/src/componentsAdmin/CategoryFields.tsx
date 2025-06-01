@@ -2,7 +2,7 @@ import React from 'react'
 import { ProductFormData } from '../types'
 
 interface CategoryFieldsProps {
-  category: 'mouse' | 'keyboard' | 'headphone'
+  category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad'
   formData: ProductFormData
   setFormData: (data: ProductFormData) => void
 }
@@ -217,6 +217,124 @@ const CategoryFields: React.FC<CategoryFieldsProps> = ({ category, formData, set
           />
           Âm thanh vòm
         </label>
+      </>
+    )
+  } else if (category === 'handheld') {
+    return (
+      <>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Dung lượng pin</label>
+        <input
+          type='number'
+          placeholder='Dung lượng pin (mAh)'
+          value={formData.handheldDetails?.pin || 0}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              handheldDetails: { ...formData.handheldDetails!, pin: Number(e.target.value) }
+            })
+          }
+          className='w-full p-2 border rounded'
+        />
+        <label className='flex items-center'>
+          <input
+            type='checkbox'
+            checked={formData.handheldDetails?.wireless || false}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                handheldDetails: { ...formData.handheldDetails!, wireless: e.target.checked }
+              })
+            }
+            className='mr-2'
+          />
+          Kết nối không dây
+        </label>
+        <label className='flex items-center'>
+          <input
+            type='checkbox'
+            checked={formData.handheldDetails?.rgb || false}
+            onChange={(e) =>
+              setFormData({
+                ...formData,
+                handheldDetails: { ...formData.handheldDetails!, rgb: e.target.checked }
+              })
+            }
+            className='mr-2'
+          />
+          RGB
+        </label>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Số lượng nút bấm</label>
+        <input
+          type='number'
+          placeholder='Số lượng nút bấm'
+          value={formData.handheldDetails?.buttons || 0}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              handheldDetails: { ...formData.handheldDetails!, buttons: Number(e.target.value) }
+            })
+          }
+          className='w-full p-2 border rounded'
+        />
+      </>
+    )
+  } else if (category === 'pad') {
+    return (
+      <>
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Chiều rộng</label>
+        <input
+          type='number'
+          placeholder='Chiều rộng (cm)'
+          value={formData.padDetails?.width || 0}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              padDetails: { ...formData.padDetails!, width: Number(e.target.value) }
+            })
+          }
+          className='w-full p-2 border rounded'
+        />
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Chiều dài</label>
+        <input
+          type='number'
+          placeholder='Chiều cao (cm)'
+          value={formData.padDetails?.height || 0}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              padDetails: { ...formData.padDetails!, height: Number(e.target.value) }
+            })
+          }
+          className='w-full p-2 border rounded'
+        />
+        <label className='block text-sm font-medium text-gray-700 mb-1'>Độ dày</label>
+        <input
+          type='number'
+          placeholder='Độ dày (mm)'
+          value={formData.padDetails?.thick || 0}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              padDetails: { ...formData.padDetails!, thick: Number(e.target.value) }
+            })
+          }
+          className='w-full p-2 border rounded'
+        />
+        <select
+          value={formData.padDetails?.type || ''}
+          onChange={(e) =>
+            setFormData({
+              ...formData,
+              padDetails: { ...formData.padDetails!, type: e.target.value }
+            })
+          }
+          className='w-full p-2 border rounded'
+        >
+          <option value=''>Chất liệu</option>
+          <option value='cứng'>Vải</option>
+          <option value='cứng'>Nỉ</option>
+          <option value='mềm'>Kính</option>
+        </select>
       </>
     )
   }

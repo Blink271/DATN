@@ -9,7 +9,7 @@ interface EditProductModalProps {
   onSave: (formData: ProductFormData) => Promise<boolean>
   formData: ProductFormData
   setFormData: (data: ProductFormData) => void
-  handleCategoryChange: (category: 'mouse' | 'keyboard' | 'headphone') => void
+  handleCategoryChange: (category: 'mouse' | 'keyboard' | 'headphone' | 'handheld' | 'pad') => void
   loading: boolean
 }
 
